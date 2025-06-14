@@ -1,6 +1,5 @@
-
 import { vessels } from "./dummyVessels";
-import filipinoNames from "./dummyFilipinoNames";
+import { filipinoNames } from "./dummyFilipinoNames";
 
 // Generating a crew array for each vessel (22 crew per vessel)
 export type CrewMember = {
