@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -154,7 +153,7 @@ export default function VesselDetail() {
       <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
 
       {/* Editable summary card section at the very top */}
-      <Card className="mb-6">
+      <Card id="VesselCard" className="mb-6">
         <CardHeader>
           <EditableSection
             title=""
