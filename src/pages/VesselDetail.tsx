@@ -1,19 +1,51 @@
-
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
+import EditableSection from "@/components/EditableSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// Section headers for organization
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section className="mb-10">
-    <h2 className="text-xl font-bold mb-3">{title}</h2>
-    <div className="bg-muted/40 rounded-lg p-5">{children}</div>
-  </section>
-);
-const dummy = (label: string) => <span className="italic text-muted-foreground">[Not Set]</span>;
+
+// All keys to be editable for traceability
+const SECTIONS = [
+  // I. Basic Vessel Particulars (8 shown for brevity)
+  { key: "name", label: "Vessel Name" },
+  { key: "imo", label: "IMO Number" },
+  { key: "callSign", label: "Call Sign" },
+  { key: "flag", label: "Flag" },
+  { key: "type", label: "Ship Type" },
+  { key: "classSociety", label: "Class Society" },
+  { key: "gt", label: "Gross Tonnage (GT)" },
+  { key: "dwt", label: "Deadweight Tonnage (DWT)" },
+  { key: "nt", label: "Net Tonnage" },
+  { key: "loa", label: "Length Overall (LOA)" },
+  // Add more as needed...
+];
+
+function getInitialParticulars(vessel: any) {
+  // Map vessel data and dummy fields as string
+  return {
+    name: vessel.name,
+    imo: vessel.imo,
+    callSign: "[Not Set]",
+    flag: vessel.flag,
+    type: vessel.type,
+    classSociety: "[Not Set]",
+    gt: "[Not Set]",
+    dwt: vessel.dwt.toString(),
+    nt: "[Not Set]",
+    loa: "[Not Set]",
+    // ...other fields
+  };
+}
 
 export default function VesselDetail() {
   const { imo } = useParams<{ imo: string }>();
   const vessel = vessels.find(v => v.imo === imo);
+
+  const [particulars, setParticulars] = useState(() =>
+    vessel ? getInitialParticulars(vessel) : {}
+  );
+  // Audit info: { field: { user, date } }
+  const [audit, setAudit] = useState<Record<string, { user: string; date: string }>>({});
 
   if (!vessel) {
     return (
@@ -29,165 +61,189 @@ export default function VesselDetail() {
       <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-2xl">{vessel.name}</CardTitle>
-          <div className="text-muted-foreground">IMO: {vessel.imo}</div>
+          <CardTitle className="text-2xl">{particulars.name}</CardTitle>
+          <div className="text-muted-foreground">IMO: {particulars.imo}</div>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-4">
-            <div><span className="font-medium">Flag:</span> {vessel.flag}</div>
-            <div><span className="font-medium">Ship Type:</span> {vessel.type}</div>
-            <div><span className="font-medium">DWT:</span> {vessel.dwt}</div>
+            <div><span className="font-medium">Flag:</span> {particulars.flag}</div>
+            <div><span className="font-medium">Ship Type:</span> {particulars.type}</div>
+            <div><span className="font-medium">DWT:</span> {particulars.dwt}</div>
             <div><span className="font-medium">Year Built:</span> {vessel.built}</div>
             <div><span className="font-medium">Owner:</span> {vessel.owner}</div>
           </div>
         </CardContent>
       </Card>
 
-      <Section title="I. Basic Vessel Particulars">
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">I. Basic Vessel Particulars</h2>
         <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Vessel Name:</strong> {vessel.name}</div>
-          <div><strong>IMO Number:</strong> {vessel.imo}</div>
-          <div><strong>Call Sign:</strong> {dummy("Call Sign")}</div>
-          <div><strong>Flag:</strong> {vessel.flag}</div>
-          <div><strong>Ship Type:</strong> {vessel.type}</div>
-          <div><strong>Class Society:</strong> {dummy("Class Society")}</div>
-          <div><strong>Gross Tonnage (GT):</strong> {dummy("Gross Tonnage")}</div>
-          <div><strong>Deadweight Tonnage (DWT):</strong> {vessel.dwt}</div>
-          <div><strong>Net Tonnage:</strong> {dummy("Net Tonnage")}</div>
-          <div><strong>Length Overall (LOA):</strong> {dummy("Length Overall")}</div>
-          <div><strong>Beam:</strong> {dummy("Beam")}</div>
-          <div><strong>Draft:</strong> {dummy("Draft")}</div>
-          <div><strong>Year Built:</strong> {vessel.built}</div>
-          <div><strong>Keel Laid Date:</strong> {dummy("Keel Laid Date")}</div>
-          <div><strong>Delivery Date:</strong> {dummy("Delivery Date")}</div>
-          <div><strong>Builder / Shipyard:</strong> {dummy("Shipyard")}</div>
-          <div><strong>Hull Number:</strong> {dummy("Hull Number")}</div>
+          {SECTIONS.map(({ key, label }) => (
+            <EditableSection
+              key={key}
+              label={label}
+              value={particulars[key] ?? ""}
+              onSave={(newVal, editHist) => {
+                setParticulars(p => ({ ...p, [key]: newVal }));
+                setAudit(a => ({ ...a, [key]: editHist }));
+              }}
+              lastEditedBy={audit[key]?.user}
+              lastEditedAt={audit[key]?.date}
+            />
+          ))}
         </div>
-      </Section>
+      </section>
 
-      <Section title="II. Ownership and Management">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Ship Owner Name:</strong> {vessel.owner}</div>
-          <div><strong>Ship Manager Name:</strong> {dummy("Ship Manager Name")}</div>
-          <div><strong>Commercial Operator:</strong> {dummy("Commercial Operator")}</div>
-          <div><strong>Technical Superintendent:</strong> {dummy("Technical Superintendent")}</div>
-          <div><strong>ISM Manager:</strong> {dummy("ISM Manager")}</div>
-          <div><strong>DOC Issuer:</strong> {dummy("DOC Issuer")}</div>
-          <div><strong>P&I Club:</strong> {dummy("P&I Club")}</div>
-          <div><strong>Hull & Machinery Insurer:</strong> {dummy("Insurer")}</div>
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">II. Ownership and Management</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div className="grid md:grid-cols-2 gap-2">
+            <div><strong>Ship Owner Name:</strong> {vessel.owner}</div>
+            <div><strong>Ship Manager Name:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Commercial Operator:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Technical Superintendent:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>ISM Manager:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>DOC Issuer:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>P&I Club:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Hull & Machinery Insurer:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+          </div>
         </div>
-      </Section>
+      </section>
 
-      <Section title="III. Navigation and Bridge Equipment">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Radar Type:</strong> {dummy("Radar Type")}</div>
-          <div><strong>ECDIS (Make & Model):</strong> {dummy("ECDIS")}</div>
-          <div><strong>AIS (Make & Model):</strong> {dummy("AIS")}</div>
-          <div><strong>VDR (Voyage Data Recorder):</strong> {dummy("VDR")}</div>
-          <div><strong>Gyro Compass:</strong> {dummy("Gyro Compass")}</div>
-          <div><strong>Magnetic Compass:</strong> {dummy("Magnetic Compass")}</div>
-          <div><strong>Autopilot System:</strong> {dummy("Autopilot")}</div>
-          <div><strong>GMDSS Equipment:</strong> {dummy("GMDSS")}</div>
-          <div><strong>BNWAS:</strong> {dummy("BNWAS")}</div>
-          <div><strong>Bridge Console Brand:</strong> {dummy("Bridge Console")}</div>
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">III. Navigation and Bridge Equipment</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div className="grid md:grid-cols-2 gap-2">
+            <div><strong>Radar Type:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>ECDIS (Make & Model):</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>AIS (Make & Model):</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>VDR (Voyage Data Recorder):</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Gyro Compass:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Magnetic Compass:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Autopilot System:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>GMDSS Equipment:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>BNWAS:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Bridge Console Brand:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+          </div>
         </div>
-      </Section>
+      </section>
 
-      <Section title="IV. Main Engine and Auxiliary Systems">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Main Engine Maker:</strong> {dummy("Engine Maker")}</div>
-          <div><strong>Model and Type:</strong> {dummy("Model & Type")}</div>
-          <div><strong>Power Output (kW):</strong> {dummy("Power Output")}</div>
-          <div><strong>Propeller Type:</strong> {dummy("Propeller Type")}</div>
-          <div><strong>Shaft Generator:</strong> {dummy("Shaft Generator")}</div>
-          <div><strong>Number of Auxiliary Engines / Generators:</strong> {dummy("Aux Engines")}</div>
-          <div><strong>Auxiliary Engine Maker and Model:</strong> {dummy("Aux Maker/Model")}</div>
-          <div><strong>Boiler Type and Maker:</strong> {dummy("Boiler")}</div>
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">IV. Main Engine and Auxiliary Systems</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div className="grid md:grid-cols-2 gap-2">
+            <div><strong>Main Engine Maker:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Model and Type:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Power Output (kW):</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Propeller Type:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Shaft Generator:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Number of Auxiliary Engines / Generators:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Auxiliary Engine Maker and Model:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Boiler Type and Maker:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+          </div>
         </div>
-      </Section>
+      </section>
 
-      <Section title="V. Pollution Prevention and Environmental Equipment">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Ballast Water Treatment System:</strong> {dummy("BWTS")}</div>
-          <div><strong>Sewage Treatment Plant:</strong> {dummy("Sewage")}</div>
-          <div><strong>Oily Water Separator:</strong> {dummy("OWS")}</div>
-          <div><strong>Incinerator:</strong> {dummy("Incinerator")}</div>
-          <div><strong>Scrubber System:</strong> {dummy("Scrubber")}</div>
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">V. Pollution Prevention and Environmental Equipment</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div className="grid md:grid-cols-2 gap-2">
+            <div><strong>Ballast Water Treatment System:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Sewage Treatment Plant:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Oily Water Separator:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Incinerator:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Scrubber System:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+          </div>
         </div>
-      </Section>
+      </section>
 
-      <Section title="VI. Cargo Handling Equipment (if applicable)">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Cargo Pump Type:</strong> {dummy("Pump")}</div>
-          <div><strong>Crane/Grab Details:</strong> {dummy("Crane")}</div>
-          <div><strong>Hatch Cover Type:</strong> {dummy("Hatch Cover")}</div>
-          <div><strong>CO2 System:</strong> {dummy("CO2")}</div>
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">VI. Cargo Handling Equipment (if applicable)</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div className="grid md:grid-cols-2 gap-2">
+            <div><strong>Cargo Pump Type:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Crane/Grab Details:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>Hatch Cover Type:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+            <div><strong>CO2 System:</strong> <span className="italic text-muted-foreground">[Not Set]</span></div>
+          </div>
         </div>
-      </Section>
+      </section>
 
-      <Section title="VII. Certifications">
-        <ul className="list-disc ml-8 text-sm">
-          <li>SMC {dummy("SMC")}</li>
-          <li>DOC {dummy("DOC")}</li>
-          <li>ISSC {dummy("ISSC")}</li>
-          <li>MLC {dummy("MLC")}</li>
-          <li>IOPP {dummy("IOPP")}</li>
-          <li>BWM Certificate {dummy("BWM")}</li>
-          <li>Safety Equipment Certificate {dummy("Safety Equipment")}</li>
-          <li>Class Certificate {dummy("Class Certificate")}</li>
-        </ul>
-      </Section>
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">VII. Certifications</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <ul className="list-disc ml-8 text-sm">
+            <li>SMC <span className="italic text-muted-foreground">[Not Set]</span></li>
+            <li>DOC <span className="italic text-muted-foreground">[Not Set]</span></li>
+            <li>ISSC <span className="italic text-muted-foreground">[Not Set]</span></li>
+            <li>MLC <span className="italic text-muted-foreground">[Not Set]</span></li>
+            <li>IOPP <span className="italic text-muted-foreground">[Not Set]</span></li>
+            <li>BWM Certificate <span className="italic text-muted-foreground">[Not Set]</span></li>
+            <li>Safety Equipment Certificate <span className="italic text-muted-foreground">[Not Set]</span></li>
+            <li>Class Certificate <span className="italic text-muted-foreground">[Not Set]</span></li>
+          </ul>
+        </div>
+      </section>
 
-      <Section title="VIII. Crew Complement">
-        <div>
-          <strong>Minimum Safe Manning Certificate Data:</strong> {dummy("Safe Manning")}
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">VIII. Crew Complement</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div>
+            <strong>Minimum Safe Manning Certificate Data:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Crew Matrix (Officer Nationality, Experience):</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Rotation Plan:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Last Change Date:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Next Planned Crew Change:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
         </div>
-        <div>
-          <strong>Crew Matrix (Officer Nationality, Experience):</strong> {dummy("Matrix")}
-        </div>
-        <div>
-          <strong>Rotation Plan:</strong> {dummy("Rotation Plan")}
-        </div>
-        <div>
-          <strong>Last Change Date:</strong> {dummy("Last Change")}
-        </div>
-        <div>
-          <strong>Next Planned Crew Change:</strong> {dummy("Next Crew Change")}
-        </div>
-      </Section>
+      </section>
 
-      <Section title="IX. Dry Docking and Maintenance History">
-        <div>
-          <strong>Last Dry Dock Date:</strong> {dummy("Last Dry Dock")}
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">IX. Dry Docking and Maintenance History</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div>
+            <strong>Last Dry Dock Date:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Next Scheduled Docking:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Last Major Repair Summary:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Planned Maintenance System (PMS) link:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
         </div>
-        <div>
-          <strong>Next Scheduled Docking:</strong> {dummy("Next Dock")}
-        </div>
-        <div>
-          <strong>Last Major Repair Summary:</strong> {dummy("Major Repair")}
-        </div>
-        <div>
-          <strong>Planned Maintenance System (PMS) link:</strong> {dummy("PMS Link")}
-        </div>
-      </Section>
+      </section>
 
-      <Section title="X. Documents & Attachments">
-        <div>
-          <strong>Ship Plans:</strong> {dummy("Ship Plans")}
+      <section className="mb-10">
+        <h2 className="text-xl font-bold mb-3">X. Documents & Attachments</h2>
+        <div className="bg-muted/40 rounded-lg p-5">
+          <div>
+            <strong>Ship Plans:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Manuals (SMS, Bridge Procedures, etc.):</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Certificates (Upload Area):</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Owner's Instructions:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
+          <div>
+            <strong>Crew Familiarization Checklists:</strong> <span className="italic text-muted-foreground">[Not Set]</span>
+          </div>
         </div>
-        <div>
-          <strong>Manuals (SMS, Bridge Procedures, etc.):</strong> {dummy("Manuals")}
-        </div>
-        <div>
-          <strong>Certificates (Upload Area):</strong> {dummy("Certificates")}
-        </div>
-        <div>
-          <strong>Owner’s Instructions:</strong> {dummy("Owner's Instructions")}
-        </div>
-        <div>
-          <strong>Crew Familiarization Checklists:</strong> {dummy("Familiarization")}
-        </div>
-      </Section>
+      </section>
     </div>
   );
 }
