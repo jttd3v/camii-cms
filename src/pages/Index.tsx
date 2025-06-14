@@ -1,8 +1,8 @@
-
 import ContractTable from "@/components/ContractTable";
 import ContractPlanner from "@/components/ContractPlanner";
 import CrewCard from "@/components/CrewCard";
 import VacationSeafarersTable from "@/components/VacationSeafarersTable";
+import OnboardSeafarersTable from "@/components/OnboardSeafarersTable";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, QrCode, ArrowDown } from "lucide-react";
@@ -30,6 +30,7 @@ const Index = () => {
         <Tabs defaultValue="dashboard" className="w-full">
           <TabsList>
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="onboard">Onboard Seafarers</TabsTrigger>
             <TabsTrigger value="vacation">Vacation Seafarers</TabsTrigger>
           </TabsList>
           <TabsContent value="dashboard">
@@ -59,6 +60,9 @@ const Index = () => {
                 )}
               </div>
             </div>
+          </TabsContent>
+          <TabsContent value="onboard">
+            <OnboardSeafarersTable />
           </TabsContent>
           <TabsContent value="vacation">
             <VacationSeafarersTable />
