@@ -1,8 +1,10 @@
+
 import ContractTable from "@/components/ContractTable";
 import ContractPlanner from "@/components/ContractPlanner";
 import CrewCard from "@/components/CrewCard";
 import VacationSeafarersTable from "@/components/VacationSeafarersTable";
 import OnboardSeafarersTable from "@/components/OnboardSeafarersTable";
+import AllVesselsTab from "@/components/AllVesselsTab";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, QrCode, ArrowDown } from "lucide-react";
@@ -32,6 +34,7 @@ const Index = () => {
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="onboard">Onboard Seafarers</TabsTrigger>
             <TabsTrigger value="vacation">Vacation Seafarers</TabsTrigger>
+            <TabsTrigger value="vessels">All Vessels</TabsTrigger>
           </TabsList>
           <TabsContent value="dashboard">
             <div className="flex gap-8">
@@ -66,6 +69,9 @@ const Index = () => {
           </TabsContent>
           <TabsContent value="vacation">
             <VacationSeafarersTable />
+          </TabsContent>
+          <TabsContent value="vessels">
+            <AllVesselsTab />
           </TabsContent>
         </Tabs>
       </main>
