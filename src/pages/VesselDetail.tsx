@@ -20,21 +20,24 @@ export default function VesselDetail() {
     );
   }
 
+  // Helper to safely cast any value to string or empty string if falsy/undefined/null
+  const s = (v: unknown) => (v !== null && v !== undefined ? String(v) : "");
+
   // I. Basic Vessel Particulars
   const basicFields = [
-    { label: "Vessel Name:", value: vessel.name, key: "name" },
-    { label: "IMO Number:", value: vessel.imo, key: "imo" },
+    { label: "Vessel Name:", value: s(vessel.name), key: "name" },
+    { label: "IMO Number:", value: s(vessel.imo), key: "imo" },
     { label: "Call Sign:", value: "", key: "callsign" },
-    { label: "Flag:", value: vessel.flag, key: "flag" },
-    { label: "Ship Type:", value: vessel.type, key: "type" },
+    { label: "Flag:", value: s(vessel.flag), key: "flag" },
+    { label: "Ship Type:", value: s(vessel.type), key: "type" },
     { label: "Class Society:", value: "", key: "class" },
     { label: "Gross Tonnage (GT):", value: "", key: "gt" },
-    { label: "Deadweight Tonnage (DWT):", value: vessel.dwt, key: "dwt" },
+    { label: "Deadweight Tonnage (DWT):", value: s(vessel.dwt), key: "dwt" },
     { label: "Net Tonnage:", value: "", key: "nt" },
     { label: "Length Overall (LOA):", value: "", key: "loa" },
     { label: "Beam:", value: "", key: "beam" },
     { label: "Draft:", value: "", key: "draft" },
-    { label: "Year Built:", value: vessel.built, key: "built" },
+    { label: "Year Built:", value: s(vessel.built), key: "built" },
     { label: "Keel Laid Date:", value: "", key: "keeldate" },
     { label: "Delivery Date:", value: "", key: "delivery" },
     { label: "Builder / Shipyard:", value: "", key: "builder" },
@@ -44,7 +47,7 @@ export default function VesselDetail() {
   // II. Ownership and Management — already implemented as EditableSection previously
 
   const ownerFields = [
-    { label: "Ship Owner Name:", value: vessel.owner, key: "owner" },
+    { label: "Ship Owner Name:", value: s(vessel.owner), key: "owner" },
     { label: "Ship Manager Name:", value: "", key: "mgr" },
     { label: "Commercial Operator:", value: "", key: "operator" },
     { label: "Technical Superintendent:", value: "", key: "tsuper" },
@@ -154,7 +157,6 @@ export default function VesselDetail() {
         </CardContent>
       </Card>
 
-      {/* Apply EditableSection to the listed sections */}
       <EditableSection
         title="I. Basic Vessel Particulars"
         fields={basicFields}
