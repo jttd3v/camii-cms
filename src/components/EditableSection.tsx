@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import AuthModal from "./AuthModal";
 
 type Field = {
   label: string;
@@ -25,13 +26,14 @@ export default function EditableSection({
   lastEditedAt,
 }: EditableSectionProps) {
   const [editing, setEditing] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
   const [fieldState, setFieldState] = useState(
     () =>
       Object.fromEntries(fields.map(f => [f.key, f.value])) as {
         [key: string]: string;
       }
   );
-  const [editor, setEditor] = useState(lastEditor || "Admin");
+  const [editor, setEditor] = useState<string>(lastEditor || "");
   const [editedAt, setEditedAt] = useState<Date | null>(
     lastEditedAt || null
   );
@@ -40,17 +42,27 @@ export default function EditableSection({
     setFieldState({ ...fieldState, [key]: e.target.value });
   };
 
-  const handleEdit = () => setEditing(true);
+  const handleEdit = () => {
+    setShowAuth(true);
+  };
+
+  const handleAuthSuccess = (username: string) => {
+    setEditing(true);
+    setEditor(username);
+    setEditedAt(new Date());
+    setShowAuth(false);
+  };
 
   const handleSave = () => {
     setEditing(false);
-    setEditor("Admin");
+    if (!editor) setEditor("admin"); // fallback
     setEditedAt(new Date());
     onSave && onSave(fieldState);
   };
 
   return (
     <section className="mb-10">
+      <AuthModal open={showAuth} onClose={() => setShowAuth(false)} onSuccess={handleAuthSuccess} />
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-xl font-bold">{title}</h2>
         <div className="flex items-center gap-2">
@@ -79,7 +91,7 @@ export default function EditableSection({
               textAlign: "center",
             }}
           >
-            Edited by ({editor}){" "}
+            Edited by ({editor || <span className="italic text-muted-foreground">unknown</span>}){" "}
             {editedAt
               ? "(" +
                 editedAt
@@ -101,7 +113,7 @@ export default function EditableSection({
             <strong>{label}</strong>{" "}
             {editing ? (
               <Input
-                value={fieldState[key]}
+                value={fieldState[key] ?? ""}
                 onChange={e => handleFieldChange(e, key)}
                 className="inline w-[70%] max-w-sm"
                 placeholder="Enter value"
