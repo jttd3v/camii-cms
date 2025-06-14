@@ -1,5 +1,6 @@
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 // Dummy vacation seafarer data
 const vacationers = [
@@ -46,50 +47,49 @@ const vacationers = [
   // ... (add as many as needed for your app)
 ];
 
+function statusBadge(status: string) {
+  switch (status) {
+    case "Available":
+      return <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 px-2 py-0.5">{status}</Badge>;
+    case "Requested":
+      return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-200 px-2 py-0.5">{status}</Badge>;
+    case "On Hold":
+    default:
+      return <Badge variant="destructive" className="bg-red-100 text-red-800 border-red-200 px-2 py-0.5">{status}</Badge>;
+  }
+}
+
 export default function VacationSeafarersTable() {
   return (
-    <section>
-      <h2 className="font-semibold text-xl mb-2">Seafarers on Vacation</h2>
-      <div className="rounded-lg overflow-auto border shadow">
+    <section className="px-2 sm:px-4">
+      <h2 className="font-semibold text-lg sm:text-xl mb-1 mt-2">Seafarers on Vacation</h2>
+      <div className="rounded-lg border shadow bg-white overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Rank</TableHead>
-              <TableHead>Last Vessel</TableHead>
-              <TableHead>Vacation Since</TableHead>
-              <TableHead>Last Contract</TableHead>
-              <TableHead>Status</TableHead>
+            <TableRow className="h-10">
+              <TableHead className="px-3 py-2">Name</TableHead>
+              <TableHead className="px-3 py-2">Rank</TableHead>
+              <TableHead className="px-3 py-2">Last Vessel</TableHead>
+              <TableHead className="px-3 py-2">Vacation Since</TableHead>
+              <TableHead className="px-3 py-2">Last Contract</TableHead>
+              <TableHead className="px-3 py-2">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {vacationers.map((v) => (
-              <TableRow key={v.name}>
-                <TableCell>{v.name}</TableCell>
-                <TableCell>{v.rank}</TableCell>
-                <TableCell>{v.vessel}</TableCell>
-                <TableCell>{v.vacationSince}</TableCell>
-                <TableCell>{v.lastContract}</TableCell>
-                <TableCell>
-                  <span
-                    className={
-                      "px-2 py-0.5 rounded-full text-xs " +
-                      (v.status === "Available"
-                        ? "bg-green-100 text-green-900"
-                        : v.status === "Requested"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-200 text-red-900")
-                    }
-                  >
-                    {v.status}
-                  </span>
-                </TableCell>
+              <TableRow key={v.name} className="h-10 hover:bg-muted/40">
+                <TableCell className="px-3 py-2">{v.name}</TableCell>
+                <TableCell className="px-3 py-2">{v.rank}</TableCell>
+                <TableCell className="px-3 py-2">{v.vessel}</TableCell>
+                <TableCell className="px-3 py-2">{v.vacationSince}</TableCell>
+                <TableCell className="px-3 py-2">{v.lastContract}</TableCell>
+                <TableCell className="px-3 py-2">{statusBadge(v.status)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-      <div className="text-xs text-muted-foreground mt-2">
+      <div className="text-xs text-muted-foreground mt-1 mb-2">
         Seafarers are listed here during their vacation/standby between contracts.
       </div>
     </section>
