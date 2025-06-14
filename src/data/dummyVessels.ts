@@ -3,7 +3,7 @@ export type VesselParticulars = {
   name: string;
   imo: string;
   flag: string;
-  type: string;
+  type: "Bulk Carrier" | "Reefer Ship";
   dwt: number;
   built: number;
   owner: string;
@@ -23,7 +23,7 @@ export const vessels: VesselParticulars[] = [
     name: "MT Pacific Eagle",
     imo: "9876543",
     flag: "Panama",
-    type: "Oil Tanker",
+    type: "Reefer Ship",
     dwt: 73000,
     built: 2019,
     owner: "Eagle Tankers PLC"
@@ -32,7 +32,7 @@ export const vessels: VesselParticulars[] = [
     name: "MV Southern Phoenix",
     imo: "9831234",
     flag: "Liberia",
-    type: "Container Ship",
+    type: "Bulk Carrier",
     dwt: 42500,
     built: 2014,
     owner: "South Star Shipping"
@@ -41,7 +41,7 @@ export const vessels: VesselParticulars[] = [
     name: "MV Carabao Spirit",
     imo: "9811122",
     flag: "Marshall Islands",
-    type: "General Cargo",
+    type: "Reefer Ship",
     dwt: 28000,
     built: 2012,
     owner: "Manila Oceanic Lines"
@@ -50,7 +50,7 @@ export const vessels: VesselParticulars[] = [
     name: "MT Pearl of Cebu",
     imo: "9789900",
     flag: "Singapore",
-    type: "Chemical Tanker",
+    type: "Bulk Carrier",
     dwt: 15500,
     built: 2018,
     owner: "Pearl Maritime Inc"
