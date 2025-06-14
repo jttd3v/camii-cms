@@ -1,12 +1,56 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import ContractTable from "@/components/ContractTable";
+import ContractPlanner from "@/components/ContractPlanner";
+import CrewCard from "@/components/CrewCard";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { FileText, QrCode, ArrowDown } from "lucide-react";
 
 const Index = () => {
+  // State to select crew, contract; using mock data for now
+  const [selectedCrewId, setSelectedCrewId] = useState<string | null>(null);
+  const [selectedContractId, setSelectedContractId] = useState<string | null>(null);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background flex flex-col px-0 pt-8">
+      <header className="flex items-center justify-between mb-6 px-12">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">Contract & Crew Management</h1>
+          <p className="text-muted-foreground mt-1">
+            Centralized dashboard for contract tracking, compliance, and audit readiness.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline"><FileText className="mr-2 h-4 w-4" /> Export PDF </Button>
+          <Button variant="outline"><QrCode className="mr-2 h-4 w-4" /> QR Export</Button>
+        </div>
+      </header>
+      <main className="flex gap-8 px-12">
+        {/* Left: Timeline & contract table in column */}
+        <div className="flex flex-col gap-6 w-3/5">
+          <ContractPlanner onBarClick={(crewId) => setSelectedCrewId(crewId)} />
+          <ContractTable
+            onSelect={(crewId, contractId) => {
+              setSelectedCrewId(crewId);
+              setSelectedContractId(contractId);
+            }}
+            highlightContractId={selectedContractId}
+          />
+        </div>
+        {/* Right: dynamic crew card or placeholder */}
+        <div className="flex-1 min-w-[380px] max-w-lg">
+          {selectedCrewId ? (
+            <CrewCard crewId={selectedCrewId} selectedContractId={selectedContractId} />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full min-h-[340px] bg-muted/30 rounded-xl border shadow-inner text-muted-foreground text-lg">
+              <ArrowDown className="mb-2 mt-3 h-7 w-7 animate-bounce" />
+              <span>
+                Select a crew member or contract to view full details, readiness, and audit logs.
+              </span>
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };
