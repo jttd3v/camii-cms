@@ -1,8 +1,9 @@
-
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// Section headers for organization
+import EditableSection from "@/components/EditableSection";
+
+// Only showing minimal dummy for demonstration
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-10">
     <h2 className="text-xl font-bold mb-3">{title}</h2>
@@ -24,6 +25,18 @@ export default function VesselDetail() {
     );
   }
 
+  // FIELDS FOR OWNERSHIP & MANAGEMENT
+  const ownerFields = [
+    { label: "Ship Owner Name:", value: vessel.owner, key: "owner" },
+    { label: "Ship Manager Name:", value: "", key: "mgr" },
+    { label: "Commercial Operator:", value: "", key: "operator" },
+    { label: "Technical Superintendent:", value: "", key: "tsuper" },
+    { label: "ISM Manager:", value: "", key: "ism" },
+    { label: "DOC Issuer:", value: "", key: "doc" },
+    { label: "P&I Club:", value: "", key: "pi" },
+    { label: "Hull & Machinery Insurer:", value: "", key: "insurer" },
+  ];
+
   return (
     <div className="max-w-3xl mx-auto py-10 px-4">
       <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
@@ -43,6 +56,7 @@ export default function VesselDetail() {
         </CardContent>
       </Card>
 
+      {/* I. Basic Vessel Particulars */}
       <Section title="I. Basic Vessel Particulars">
         <div className="grid md:grid-cols-2 gap-2">
           <div><strong>Vessel Name:</strong> {vessel.name}</div>
@@ -65,18 +79,11 @@ export default function VesselDetail() {
         </div>
       </Section>
 
-      <Section title="II. Ownership and Management">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Ship Owner Name:</strong> {vessel.owner}</div>
-          <div><strong>Ship Manager Name:</strong> {dummy("Ship Manager Name")}</div>
-          <div><strong>Commercial Operator:</strong> {dummy("Commercial Operator")}</div>
-          <div><strong>Technical Superintendent:</strong> {dummy("Technical Superintendent")}</div>
-          <div><strong>ISM Manager:</strong> {dummy("ISM Manager")}</div>
-          <div><strong>DOC Issuer:</strong> {dummy("DOC Issuer")}</div>
-          <div><strong>P&I Club:</strong> {dummy("P&I Club")}</div>
-          <div><strong>Hull & Machinery Insurer:</strong> {dummy("Insurer")}</div>
-        </div>
-      </Section>
+      {/* II. Ownership and Management with Editing */}
+      <EditableSection
+        title="II. Ownership and Management"
+        fields={ownerFields}
+      />
 
       <Section title="III. Navigation and Bridge Equipment">
         <div className="grid md:grid-cols-2 gap-2">
