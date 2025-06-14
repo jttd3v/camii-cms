@@ -2,6 +2,8 @@ import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EditableSection from "@/components/EditableSection";
+import VesselSummaryCard from "@/components/VesselSummaryCard";
+import VesselDetailSection from "@/components/VesselDetailSection";
 
 // Dummy fallback text for unset fields
 const dummy = (label: string) => <span className="italic text-muted-foreground">[Not Set]</span>;
@@ -22,7 +24,7 @@ export default function VesselDetail() {
   // Helper to safely cast any value to string or empty string if falsy/undefined/null
   const s = (v: unknown) => (v !== null && v !== undefined ? String(v) : "");
 
-  // Top summary section fields (these match the fields in your screenshot)
+  // Top summary section fields
   const summaryFields = [
     { label: "Vessel Name", value: s(vessel.name), key: "name" },
     { label: "IMO", value: s(vessel.imo), key: "imo" },
@@ -152,66 +154,19 @@ export default function VesselDetail() {
     <div className="max-w-3xl mx-auto py-10 px-4">
       <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
 
-      {/* Editable summary card section at the very top */}
-      <Card id="VesselCard" className="mb-6">
-        <CardHeader>
-          <EditableSection
-            title=""
-            fields={summaryFields}
-          />
-        </CardHeader>
-        {/* The old summary layout below is removed; it's replaced by EditableSection now. */}
-      </Card>
+      {/* Summary card section */}
+      <VesselSummaryCard fields={summaryFields} />
 
-      <EditableSection
-        title="I. Basic Vessel Particulars"
-        fields={basicFields}
-      />
-
-      <EditableSection
-        title="II. Ownership and Management"
-        fields={ownerFields}
-      />
-
-      <EditableSection
-        title="III. Navigation and Bridge Equipment"
-        fields={navFields}
-      />
-
-      <EditableSection
-        title="IV. Main Engine and Auxiliary Systems"
-        fields={engineFields}
-      />
-
-      <EditableSection
-        title="V. Pollution Prevention and Environmental Equipment"
-        fields={pollutionFields}
-      />
-
-      <EditableSection
-        title="VI. Cargo Handling Equipment (if applicable)"
-        fields={cargoFields}
-      />
-
-      <EditableSection
-        title="VII. Certifications"
-        fields={certFields}
-      />
-
-      <EditableSection
-        title="VIII. Crew Complement"
-        fields={crewFields}
-      />
-
-      <EditableSection
-        title="IX. Dry Docking and Maintenance History"
-        fields={dockingFields}
-      />
-
-      <EditableSection
-        title="X. Documents & Attachments"
-        fields={docFields}
-      />
+      <VesselDetailSection title="I. Basic Vessel Particulars" fields={basicFields} />
+      <VesselDetailSection title="II. Ownership and Management" fields={ownerFields} />
+      <VesselDetailSection title="III. Navigation and Bridge Equipment" fields={navFields} />
+      <VesselDetailSection title="IV. Main Engine and Auxiliary Systems" fields={engineFields} />
+      <VesselDetailSection title="V. Pollution Prevention and Environmental Equipment" fields={pollutionFields} />
+      <VesselDetailSection title="VI. Cargo Handling Equipment (if applicable)" fields={cargoFields} />
+      <VesselDetailSection title="VII. Certifications" fields={certFields} />
+      <VesselDetailSection title="VIII. Crew Complement" fields={crewFields} />
+      <VesselDetailSection title="IX. Dry Docking and Maintenance History" fields={dockingFields} />
+      <VesselDetailSection title="X. Documents & Attachments" fields={docFields} />
     </div>
   );
 }
