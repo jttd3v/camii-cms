@@ -1,15 +1,10 @@
+
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EditableSection from "@/components/EditableSection";
 
-// Only showing minimal dummy for demonstration
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section className="mb-10">
-    <h2 className="text-xl font-bold mb-3">{title}</h2>
-    <div className="bg-muted/40 rounded-lg p-5">{children}</div>
-  </section>
-);
+// Dummy fallback text for unset fields
 const dummy = (label: string) => <span className="italic text-muted-foreground">[Not Set]</span>;
 
 export default function VesselDetail() {
@@ -25,7 +20,29 @@ export default function VesselDetail() {
     );
   }
 
-  // FIELDS FOR OWNERSHIP & MANAGEMENT
+  // I. Basic Vessel Particulars
+  const basicFields = [
+    { label: "Vessel Name:", value: vessel.name, key: "name" },
+    { label: "IMO Number:", value: vessel.imo, key: "imo" },
+    { label: "Call Sign:", value: "", key: "callsign" },
+    { label: "Flag:", value: vessel.flag, key: "flag" },
+    { label: "Ship Type:", value: vessel.type, key: "type" },
+    { label: "Class Society:", value: "", key: "class" },
+    { label: "Gross Tonnage (GT):", value: "", key: "gt" },
+    { label: "Deadweight Tonnage (DWT):", value: vessel.dwt, key: "dwt" },
+    { label: "Net Tonnage:", value: "", key: "nt" },
+    { label: "Length Overall (LOA):", value: "", key: "loa" },
+    { label: "Beam:", value: "", key: "beam" },
+    { label: "Draft:", value: "", key: "draft" },
+    { label: "Year Built:", value: vessel.built, key: "built" },
+    { label: "Keel Laid Date:", value: "", key: "keeldate" },
+    { label: "Delivery Date:", value: "", key: "delivery" },
+    { label: "Builder / Shipyard:", value: "", key: "builder" },
+    { label: "Hull Number:", value: "", key: "hullno" },
+  ];
+
+  // II. Ownership and Management — already implemented as EditableSection previously
+
   const ownerFields = [
     { label: "Ship Owner Name:", value: vessel.owner, key: "owner" },
     { label: "Ship Manager Name:", value: "", key: "mgr" },
@@ -35,6 +52,87 @@ export default function VesselDetail() {
     { label: "DOC Issuer:", value: "", key: "doc" },
     { label: "P&I Club:", value: "", key: "pi" },
     { label: "Hull & Machinery Insurer:", value: "", key: "insurer" },
+  ];
+
+  // III. Navigation and Bridge Equipment
+  const navFields = [
+    { label: "Radar Type:", value: "", key: "radar" },
+    { label: "ECDIS (Make & Model):", value: "", key: "ecdis" },
+    { label: "AIS (Make & Model):", value: "", key: "ais" },
+    { label: "VDR (Voyage Data Recorder):", value: "", key: "vdr" },
+    { label: "Gyro Compass:", value: "", key: "gyro" },
+    { label: "Magnetic Compass:", value: "", key: "magcompass" },
+    { label: "Autopilot System:", value: "", key: "autopilot" },
+    { label: "GMDSS Equipment:", value: "", key: "gmdss" },
+    { label: "BNWAS:", value: "", key: "bnwas" },
+    { label: "Bridge Console Brand:", value: "", key: "console" },
+  ];
+
+  // IV. Main Engine and Auxiliary Systems
+  const engineFields = [
+    { label: "Main Engine Maker:", value: "", key: "mainengine" },
+    { label: "Model and Type:", value: "", key: "enginemodel" },
+    { label: "Power Output (kW):", value: "", key: "enginepower" },
+    { label: "Propeller Type:", value: "", key: "propeller" },
+    { label: "Shaft Generator:", value: "", key: "shaftgen" },
+    { label: "Number of Auxiliary Engines / Generators:", value: "", key: "auxnum" },
+    { label: "Auxiliary Engine Maker and Model:", value: "", key: "auxmaker" },
+    { label: "Boiler Type and Maker:", value: "", key: "boiler" },
+  ];
+
+  // V. Pollution Prevention and Environmental Equipment
+  const pollutionFields = [
+    { label: "Ballast Water Treatment System:", value: "", key: "bwts" },
+    { label: "Sewage Treatment Plant:", value: "", key: "sewage" },
+    { label: "Oily Water Separator:", value: "", key: "ows" },
+    { label: "Incinerator:", value: "", key: "incinerator" },
+    { label: "Scrubber System:", value: "", key: "scrubber" },
+  ];
+
+  // VI. Cargo Handling Equipment (if applicable)
+  const cargoFields = [
+    { label: "Cargo Pump Type:", value: "", key: "pump" },
+    { label: "Crane/Grab Details:", value: "", key: "crane" },
+    { label: "Hatch Cover Type:", value: "", key: "hatch" },
+    { label: "CO2 System:", value: "", key: "co2" },
+  ];
+
+  // VII. Certifications
+  const certFields = [
+    { label: "SMC:", value: "", key: "smc" },
+    { label: "DOC:", value: "", key: "doccert" },
+    { label: "ISSC:", value: "", key: "issc" },
+    { label: "MLC:", value: "", key: "mlc" },
+    { label: "IOPP:", value: "", key: "iopp" },
+    { label: "BWM Certificate:", value: "", key: "bwm" },
+    { label: "Safety Equipment Certificate:", value: "", key: "safeequip" },
+    { label: "Class Certificate:", value: "", key: "classcert" },
+  ];
+
+  // VIII. Crew Complement
+  const crewFields = [
+    { label: "Minimum Safe Manning Certificate Data:", value: "", key: "safemanning" },
+    { label: "Crew Matrix (Officer Nationality, Experience):", value: "", key: "crewmatrix" },
+    { label: "Rotation Plan:", value: "", key: "rotation" },
+    { label: "Last Change Date:", value: "", key: "lastchange" },
+    { label: "Next Planned Crew Change:", value: "", key: "nextcrew" },
+  ];
+
+  // IX. Dry Docking and Maintenance History
+  const dockingFields = [
+    { label: "Last Dry Dock Date:", value: "", key: "lastdock" },
+    { label: "Next Scheduled Docking:", value: "", key: "nextdock" },
+    { label: "Last Major Repair Summary:", value: "", key: "majorrepair" },
+    { label: "Planned Maintenance System (PMS) link:", value: "", key: "pmslink" },
+  ];
+
+  // X. Documents & Attachments
+  const docFields = [
+    { label: "Ship Plans:", value: "", key: "plans" },
+    { label: "Manuals (SMS, Bridge Procedures, etc.):", value: "", key: "manuals" },
+    { label: "Certificates (Upload Area):", value: "", key: "certupload" },
+    { label: "Owner’s Instructions:", value: "", key: "ownerinstruct" },
+    { label: "Crew Familiarization Checklists:", value: "", key: "familiar" },
   ];
 
   return (
@@ -56,145 +154,56 @@ export default function VesselDetail() {
         </CardContent>
       </Card>
 
-      {/* I. Basic Vessel Particulars */}
-      <Section title="I. Basic Vessel Particulars">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Vessel Name:</strong> {vessel.name}</div>
-          <div><strong>IMO Number:</strong> {vessel.imo}</div>
-          <div><strong>Call Sign:</strong> {dummy("Call Sign")}</div>
-          <div><strong>Flag:</strong> {vessel.flag}</div>
-          <div><strong>Ship Type:</strong> {vessel.type}</div>
-          <div><strong>Class Society:</strong> {dummy("Class Society")}</div>
-          <div><strong>Gross Tonnage (GT):</strong> {dummy("Gross Tonnage")}</div>
-          <div><strong>Deadweight Tonnage (DWT):</strong> {vessel.dwt}</div>
-          <div><strong>Net Tonnage:</strong> {dummy("Net Tonnage")}</div>
-          <div><strong>Length Overall (LOA):</strong> {dummy("Length Overall")}</div>
-          <div><strong>Beam:</strong> {dummy("Beam")}</div>
-          <div><strong>Draft:</strong> {dummy("Draft")}</div>
-          <div><strong>Year Built:</strong> {vessel.built}</div>
-          <div><strong>Keel Laid Date:</strong> {dummy("Keel Laid Date")}</div>
-          <div><strong>Delivery Date:</strong> {dummy("Delivery Date")}</div>
-          <div><strong>Builder / Shipyard:</strong> {dummy("Shipyard")}</div>
-          <div><strong>Hull Number:</strong> {dummy("Hull Number")}</div>
-        </div>
-      </Section>
+      {/* Apply EditableSection to the listed sections */}
+      <EditableSection
+        title="I. Basic Vessel Particulars"
+        fields={basicFields}
+      />
 
-      {/* II. Ownership and Management with Editing */}
       <EditableSection
         title="II. Ownership and Management"
         fields={ownerFields}
       />
 
-      <Section title="III. Navigation and Bridge Equipment">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Radar Type:</strong> {dummy("Radar Type")}</div>
-          <div><strong>ECDIS (Make & Model):</strong> {dummy("ECDIS")}</div>
-          <div><strong>AIS (Make & Model):</strong> {dummy("AIS")}</div>
-          <div><strong>VDR (Voyage Data Recorder):</strong> {dummy("VDR")}</div>
-          <div><strong>Gyro Compass:</strong> {dummy("Gyro Compass")}</div>
-          <div><strong>Magnetic Compass:</strong> {dummy("Magnetic Compass")}</div>
-          <div><strong>Autopilot System:</strong> {dummy("Autopilot")}</div>
-          <div><strong>GMDSS Equipment:</strong> {dummy("GMDSS")}</div>
-          <div><strong>BNWAS:</strong> {dummy("BNWAS")}</div>
-          <div><strong>Bridge Console Brand:</strong> {dummy("Bridge Console")}</div>
-        </div>
-      </Section>
+      <EditableSection
+        title="III. Navigation and Bridge Equipment"
+        fields={navFields}
+      />
 
-      <Section title="IV. Main Engine and Auxiliary Systems">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Main Engine Maker:</strong> {dummy("Engine Maker")}</div>
-          <div><strong>Model and Type:</strong> {dummy("Model & Type")}</div>
-          <div><strong>Power Output (kW):</strong> {dummy("Power Output")}</div>
-          <div><strong>Propeller Type:</strong> {dummy("Propeller Type")}</div>
-          <div><strong>Shaft Generator:</strong> {dummy("Shaft Generator")}</div>
-          <div><strong>Number of Auxiliary Engines / Generators:</strong> {dummy("Aux Engines")}</div>
-          <div><strong>Auxiliary Engine Maker and Model:</strong> {dummy("Aux Maker/Model")}</div>
-          <div><strong>Boiler Type and Maker:</strong> {dummy("Boiler")}</div>
-        </div>
-      </Section>
+      <EditableSection
+        title="IV. Main Engine and Auxiliary Systems"
+        fields={engineFields}
+      />
 
-      <Section title="V. Pollution Prevention and Environmental Equipment">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Ballast Water Treatment System:</strong> {dummy("BWTS")}</div>
-          <div><strong>Sewage Treatment Plant:</strong> {dummy("Sewage")}</div>
-          <div><strong>Oily Water Separator:</strong> {dummy("OWS")}</div>
-          <div><strong>Incinerator:</strong> {dummy("Incinerator")}</div>
-          <div><strong>Scrubber System:</strong> {dummy("Scrubber")}</div>
-        </div>
-      </Section>
+      <EditableSection
+        title="V. Pollution Prevention and Environmental Equipment"
+        fields={pollutionFields}
+      />
 
-      <Section title="VI. Cargo Handling Equipment (if applicable)">
-        <div className="grid md:grid-cols-2 gap-2">
-          <div><strong>Cargo Pump Type:</strong> {dummy("Pump")}</div>
-          <div><strong>Crane/Grab Details:</strong> {dummy("Crane")}</div>
-          <div><strong>Hatch Cover Type:</strong> {dummy("Hatch Cover")}</div>
-          <div><strong>CO2 System:</strong> {dummy("CO2")}</div>
-        </div>
-      </Section>
+      <EditableSection
+        title="VI. Cargo Handling Equipment (if applicable)"
+        fields={cargoFields}
+      />
 
-      <Section title="VII. Certifications">
-        <ul className="list-disc ml-8 text-sm">
-          <li>SMC {dummy("SMC")}</li>
-          <li>DOC {dummy("DOC")}</li>
-          <li>ISSC {dummy("ISSC")}</li>
-          <li>MLC {dummy("MLC")}</li>
-          <li>IOPP {dummy("IOPP")}</li>
-          <li>BWM Certificate {dummy("BWM")}</li>
-          <li>Safety Equipment Certificate {dummy("Safety Equipment")}</li>
-          <li>Class Certificate {dummy("Class Certificate")}</li>
-        </ul>
-      </Section>
+      <EditableSection
+        title="VII. Certifications"
+        fields={certFields}
+      />
 
-      <Section title="VIII. Crew Complement">
-        <div>
-          <strong>Minimum Safe Manning Certificate Data:</strong> {dummy("Safe Manning")}
-        </div>
-        <div>
-          <strong>Crew Matrix (Officer Nationality, Experience):</strong> {dummy("Matrix")}
-        </div>
-        <div>
-          <strong>Rotation Plan:</strong> {dummy("Rotation Plan")}
-        </div>
-        <div>
-          <strong>Last Change Date:</strong> {dummy("Last Change")}
-        </div>
-        <div>
-          <strong>Next Planned Crew Change:</strong> {dummy("Next Crew Change")}
-        </div>
-      </Section>
+      <EditableSection
+        title="VIII. Crew Complement"
+        fields={crewFields}
+      />
 
-      <Section title="IX. Dry Docking and Maintenance History">
-        <div>
-          <strong>Last Dry Dock Date:</strong> {dummy("Last Dry Dock")}
-        </div>
-        <div>
-          <strong>Next Scheduled Docking:</strong> {dummy("Next Dock")}
-        </div>
-        <div>
-          <strong>Last Major Repair Summary:</strong> {dummy("Major Repair")}
-        </div>
-        <div>
-          <strong>Planned Maintenance System (PMS) link:</strong> {dummy("PMS Link")}
-        </div>
-      </Section>
+      <EditableSection
+        title="IX. Dry Docking and Maintenance History"
+        fields={dockingFields}
+      />
 
-      <Section title="X. Documents & Attachments">
-        <div>
-          <strong>Ship Plans:</strong> {dummy("Ship Plans")}
-        </div>
-        <div>
-          <strong>Manuals (SMS, Bridge Procedures, etc.):</strong> {dummy("Manuals")}
-        </div>
-        <div>
-          <strong>Certificates (Upload Area):</strong> {dummy("Certificates")}
-        </div>
-        <div>
-          <strong>Owner’s Instructions:</strong> {dummy("Owner's Instructions")}
-        </div>
-        <div>
-          <strong>Crew Familiarization Checklists:</strong> {dummy("Familiarization")}
-        </div>
-      </Section>
+      <EditableSection
+        title="X. Documents & Attachments"
+        fields={docFields}
+      />
     </div>
   );
 }
