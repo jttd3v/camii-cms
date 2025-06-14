@@ -23,6 +23,17 @@ export default function VesselDetail() {
   // Helper to safely cast any value to string or empty string if falsy/undefined/null
   const s = (v: unknown) => (v !== null && v !== undefined ? String(v) : "");
 
+  // Top summary section fields (these match the fields in your screenshot)
+  const summaryFields = [
+    { label: "Vessel Name", value: s(vessel.name), key: "name" },
+    { label: "IMO", value: s(vessel.imo), key: "imo" },
+    { label: "Flag", value: s(vessel.flag), key: "flag" },
+    { label: "Ship Type", value: s(vessel.type), key: "type" },
+    { label: "DWT", value: s(vessel.dwt), key: "dwt" },
+    { label: "Year Built", value: s(vessel.built), key: "built" },
+    { label: "Owner", value: s(vessel.owner), key: "owner" },
+  ];
+
   // I. Basic Vessel Particulars
   const basicFields = [
     { label: "Vessel Name:", value: s(vessel.name), key: "name" },
@@ -141,20 +152,16 @@ export default function VesselDetail() {
   return (
     <div className="max-w-3xl mx-auto py-10 px-4">
       <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
+
+      {/* Editable summary card section at the very top */}
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle className="text-2xl">{vessel.name}</CardTitle>
-          <div className="text-muted-foreground">IMO: {vessel.imo}</div>
+          <EditableSection
+            title=""
+            fields={summaryFields}
+          />
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-4">
-            <div><span className="font-medium">Flag:</span> {vessel.flag}</div>
-            <div><span className="font-medium">Ship Type:</span> {vessel.type}</div>
-            <div><span className="font-medium">DWT:</span> {vessel.dwt}</div>
-            <div><span className="font-medium">Year Built:</span> {vessel.built}</div>
-            <div><span className="font-medium">Owner:</span> {vessel.owner}</div>
-          </div>
-        </CardContent>
+        {/* The old summary layout below is removed; it's replaced by EditableSection now. */}
       </Card>
 
       <EditableSection
