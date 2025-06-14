@@ -1,26 +1,12 @@
-
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
 import EditableSection from "@/components/EditableSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Add type for the particulars state.
-interface Particulars {
-  name: string;
-  imo: string;
-  callSign: string;
-  flag: string;
-  type: string;
-  classSociety: string;
-  gt: string;
-  dwt: string;
-  nt: string;
-  loa: string;
-  // ... add any other fields as needed
-}
-
+// All keys to be editable for traceability
 const SECTIONS = [
+  // I. Basic Vessel Particulars (8 shown for brevity)
   { key: "name", label: "Vessel Name" },
   { key: "imo", label: "IMO Number" },
   { key: "callSign", label: "Call Sign" },
@@ -34,7 +20,8 @@ const SECTIONS = [
   // Add more as needed...
 ];
 
-function getInitialParticulars(vessel: any): Particulars {
+function getInitialParticulars(vessel: any) {
+  // Map vessel data and dummy fields as string
   return {
     name: vessel.name,
     imo: vessel.imo,
@@ -54,20 +41,10 @@ export default function VesselDetail() {
   const { imo } = useParams<{ imo: string }>();
   const vessel = vessels.find(v => v.imo === imo);
 
-  const [particulars, setParticulars] = useState<Particulars>(
-    vessel ? getInitialParticulars(vessel) : {
-      name: "",
-      imo: "",
-      callSign: "",
-      flag: "",
-      type: "",
-      classSociety: "",
-      gt: "",
-      dwt: "",
-      nt: "",
-      loa: ""
-    }
+  const [particulars, setParticulars] = useState(() =>
+    vessel ? getInitialParticulars(vessel) : {}
   );
+  // Audit info: { field: { user, date } }
   const [audit, setAudit] = useState<Record<string, { user: string; date: string }>>({});
 
   if (!vessel) {
