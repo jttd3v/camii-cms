@@ -1,0 +1,25 @@
+
+export const filipinoNames: string[] = [
+  "Antonio Reyes", "Maria Santos", "Jose Dela Cruz", "Juan Garcia", "Ana Lopez", "Carlos Ramos", "Luisa Navarro", "Rafael Torres", "Erika Gonzales", "Miguel Bautista",
+  "Cynthia Mendoza", "Arnel Villanueva", "Nina Salvador", "Bryan Castillo", "Gina Flores", "Richard Mendoza", "Allan Ramos", "Arlene Mercado", "Edward Villanueva", "Bea Delos Reyes",
+  "Dindo Capistrano", "Lina Rosales", "Ronald Mateo", "Ruby Evangelista", "Jonathan Perez", "Gloria Manalo", "Kyle Estrella", "Paolo Magpantay", "Leah Cruz", "Vincent Lim",
+  "Stephanie Regala", "Christian Ocampo", "Arnold Jimenez", "Hazel Manansala", "Marlon Domingo", "May Lanoria", "Nelson Uy", "Daniela Francisco", "Roberto Sison", "Iris Tolentino",
+  "Samantha Fabros", "Victor Abad", "Patricia Medrano", "Francis Morales", "Kimberly Velasco", "Arnold Tigno", "Sheila Averion", "Louie Alvarez", "Pierre Sandoval", "Eden Aquino",
+  "Regine Fausto", "Felix dela Rosa", "Jasmine Quiambao", "Marcial Abrigo", "Allan Yambao", "Edwin Barlaan", "Angel Caingcoy", "Monique Pascual", "Ramon Sabater", "Paul Basco",
+  "Florendo Padilla", "Menchie Alfonso", "Beverly Quinto", "Nicko Yabut", "Julius Natividad", "Chris Corpuz", "Tina Tavarez", "Marco Quijano", "Lourdes Batac", "Jan Aragon",
+  "Jerome Nepomuceno", "Vera Sandico", "Louis Beltran", "Richelle Garin", "Dennis Bayani", "Aimee Domingo", "Soraya Barrera", "Mark Gil Salazar", "Alma Yson", "Benjie Mercado",
+  "Manuel Tolentino", "Narissa Dy", "Clint Pangilinan", "Cathy Paredes", "Omar Cruz", "Julie Paloma", "Pamela De Guzman", "Gerald Quibol", "Liana Abella", "Zandro Chua",
+  "Jaime Ferrer", "Gladys Banayo", "Jenny Narvasa", "Vince Torialba", "Katrina dela Riva", "Frederick Ramos", "Melvin Venturina", "Shiela Olivar", "Ricky Narciso", "Desiree Dizon",
+  "Michael Fajardo", "Nerie Geronimo", "Jomar Palad", "Krystal Blando", "Rey Cariño", "Cheska Javier", "Dennis Dela Cruz", "Adrian Pascua", "Karen Lucero", "Geneva Pioquinto",
+  "Jessie Oliva", "Rosa Mercado", "Enrico Candelario", "Diana Rivera", "Josefina Vidamo", "Marvin Virtudazo", "Clarissa Sarenas", "Nestor Lee", "Eliza Cabuang", "William Montero",
+  "Roma Gonzaga", "Lloyd Jimeno", "Kat Oñate", "Norman Regalado", "Luzviminda Llarena", "Rosita Bartolome", "Cesar Valenzuela", "Melanie Dizon", "Jeffrey Gatchalian", "Emil Mariano",
+  "Charlene Velez", "Kathrina Ayn Santos", "Joey Panganiban", "Sheena Escote", "Bernard Tagalog", "Lorna Guinto", "Jason Almeda", "Ariel Yumul", "Grace Nepomuceno", "Enrico dela Peña",
+  "Elmer Ocampo", "Jean Redondo", "Rodrigo Mañalac", "Rowena Banania", "Rick Magtoto", "Nancy Berroya", "Fernando San Juan", "Teresita Yambot", "Rolly Bacani", "Desmond Obligacion",
+  "Kristine Seva", "Raymund Catapang", "Eugene Evangelista", "Patty Abriol", "Manolo Tagle", "Mike De Leon", "Angeli Bunyi", "Jay Mateo", "Odessa Vim", "Rosario Bayot",
+  "Richmond Ong", "Nerie Amistoso", "Evelyn Del Rosario", "Nathaniel Acosta", "Normandie Mercado", "Hershey Zuniga", "Antonio Tolentino", "Leandro Glorioso", "Jasper De Vera", "Jenny Managuelod",
+  "Jemuel Vergara", "Biboy Fontanilla", "Nemesia Malabanan", "Jose San Pedro", "Leticia Apostol", "Jake Arayata", "Mylene Ureta", "Dennis Jaen", "Rela Gutierrez", "Rolando Borja",
+  "Mitch Cuaresma", "Denver Doydora", "Richelle Gatmaitan", "Reynaldo Buenviaje", "Daisyrel Panaligan", "Nelda Consunji", "Emilyn Ong", "Monty Gumangan", "Ruby Ancheta", "Aiza Malabanan",
+  "Randy Sarmiento", "Carla Bigcas", "Joel Biasbas", "Mariella Dabu", "Crisostomo Abad", "Arvin Domingo", "Rina Embuscado", "Lilibeth Gatchalian", "Miguel Agbayani", "Lailani Romero",
+  "Phoebe Castor", "Derrick Garchitorena", "Leia Gimena", "Patrick Lagman", "Gwen Miranda", "Donnie Rivo", "Zenaida Salcedo", "Kath Dizon", "Ruelino Bagtas", "Elliza Fabul",
+  "Adriano Velo", "Hazel Landicho", "Dindo Cornejo", "Sylvia Esguerra", "Julius Angeles", "Veronica Austria", "Benito Cabrera", "Cecilia Tamayo", "Mark Edson Francisco", "Sheryl Rabago"
+];
