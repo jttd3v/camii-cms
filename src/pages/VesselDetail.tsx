@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
+import allCrews from "@/data/dummyCrews";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EditableSection from "@/components/EditableSection";
 import VesselSummaryCard from "@/components/VesselSummaryCard";
 import VesselDetailSection from "@/components/VesselDetailSection";
+import CrewListTable from "@/components/CrewListTable";
 
 // Dummy fallback text for unset fields
 const dummy = (label: string) => <span className="italic text-muted-foreground">[Not Set]</span>;
@@ -11,6 +14,7 @@ const dummy = (label: string) => <span className="italic text-muted-foreground">
 export default function VesselDetail() {
   const { imo } = useParams<{ imo: string }>();
   const vessel = vessels.find(v => v.imo === imo);
+  const [showCrewList, setShowCrewList] = useState(false);
 
   if (!vessel) {
     return (
@@ -151,11 +155,17 @@ export default function VesselDetail() {
   ];
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
+    <div className="max-w-full mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
 
       {/* Summary card section */}
-      <VesselSummaryCard fields={summaryFields} />
+      <VesselSummaryCard
+        fields={summaryFields}
+        onViewCrewClick={() => setShowCrewList(s => !s)}
+        isCrewListVisible={showCrewList}
+      />
+
+      {showCrewList && <CrewListTable crew={vesselCrew} />}
 
       <VesselDetailSection title="I. Basic Vessel Particulars" fields={basicFields} />
       <VesselDetailSection title="II. Ownership and Management" fields={ownerFields} />
