@@ -1,6 +1,5 @@
 
 import ContractTable from "@/components/ContractTable";
-import ContractPlanner from "@/components/ContractPlanner";
 import CrewCard from "@/components/CrewCard";
 import VacationSeafarersTable from "@/components/VacationSeafarersTable";
 import OnboardSeafarersTable from "@/components/OnboardSeafarersTable";
@@ -11,6 +10,7 @@ import { FileText, QrCode, ArrowDown } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PIModule from "@/components/PIModule";
 import CrewChangeTab from "@/components/CrewChangeTab";
+import CrewRotationTab from "@/components/CrewRotationTab";
 
 const Index = () => {
   const [selectedCrewId, setSelectedCrewId] = useState<string | null>(null);
@@ -34,6 +34,7 @@ const Index = () => {
         <Tabs defaultValue="dashboard" className="w-full">
           <TabsList>
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="crew-rotation">Crew Rotation</TabsTrigger>
             <TabsTrigger value="onboard">Onboard Seafarers</TabsTrigger>
             <TabsTrigger value="vacation">Vacation Seafarers</TabsTrigger>
             <TabsTrigger value="vessels">All Vessels</TabsTrigger>
@@ -42,9 +43,8 @@ const Index = () => {
           </TabsList>
           <TabsContent value="dashboard">
             <div className="flex gap-8">
-              {/* Left: Timeline & contract table in column */}
+              {/* Left: contract table */}
               <div className="flex flex-col gap-6 w-3/5">
-                <ContractPlanner onBarClick={(crewId) => setSelectedCrewId(crewId)} />
                 <ContractTable
                   onSelect={(crewId, contractId) => {
                     setSelectedCrewId(crewId);
@@ -58,7 +58,7 @@ const Index = () => {
                 {selectedCrewId ? (
                   <CrewCard crewId={selectedCrewId} selectedContractId={selectedContractId} />
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-full min-h-[340px] bg-muted/30 rounded-xl border shadow-inner text-muted-foreground text-lg">
+                  <div className="flex flex-col items-center justify-center h-full min-h-[340px] bg-muted/30 rounded-xl border shadow-inner text-muted-foreground text-lg text-center p-4">
                     <ArrowDown className="mb-2 mt-3 h-7 w-7 animate-bounce" />
                     <span>
                       Select a crew member or contract to view full details, readiness, and audit logs.
@@ -67,6 +67,9 @@ const Index = () => {
                 )}
               </div>
             </div>
+          </TabsContent>
+          <TabsContent value="crew-rotation">
+            <CrewRotationTab />
           </TabsContent>
           <TabsContent value="onboard">
             <OnboardSeafarersTable />
