@@ -159,27 +159,31 @@ export default function VesselDetail() {
 
   return (
     <div className="max-w-full mx-auto py-10 px-4 sm:px-6 lg:px-8">
-      <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
+      <div className="print:hidden">
+        <Link to="/" className="text-sm text-muted-foreground hover:underline">&larr; Back to Dashboard</Link>
 
-      {/* Summary card section */}
-      <VesselSummaryCard
-        fields={summaryFields}
-        onViewCrewClick={() => setShowCrewList(s => !s)}
-        isCrewListVisible={showCrewList}
-      />
+        {/* Summary card section */}
+        <VesselSummaryCard
+          fields={summaryFields}
+          onViewCrewClick={() => setShowCrewList(s => !s)}
+          isCrewListVisible={showCrewList}
+        />
+      </div>
 
       {showCrewList && <CrewListTable crew={vesselCrew} />}
 
-      <VesselDetailSection title="I. Basic Vessel Particulars" fields={basicFields} />
-      <VesselDetailSection title="II. Ownership and Management" fields={ownerFields} />
-      <VesselDetailSection title="III. Navigation and Bridge Equipment" fields={navFields} />
-      <VesselDetailSection title="IV. Main Engine and Auxiliary Systems" fields={engineFields} />
-      <VesselDetailSection title="V. Pollution Prevention and Environmental Equipment" fields={pollutionFields} />
-      <VesselDetailSection title="VI. Cargo Handling Equipment (if applicable)" fields={cargoFields} />
-      <VesselDetailSection title="VII. Certifications" fields={certFields} />
-      <VesselDetailSection title="VIII. Crew Complement" fields={crewFields} />
-      <VesselDetailSection title="IX. Dry Docking and Maintenance History" fields={dockingFields} />
-      <VesselDetailSection title="X. Documents & Attachments" fields={docFields} />
+      <div className="print:hidden">
+        <VesselDetailSection title="I. Basic Vessel Particulars" fields={basicFields} />
+        <VesselDetailSection title="II. Ownership and Management" fields={ownerFields} />
+        <VesselDetailSection title="III. Navigation and Bridge Equipment" fields={navFields} />
+        <VesselDetailSection title="IV. Main Engine and Auxiliary Systems" fields={engineFields} />
+        <VesselDetailSection title="V. Pollution Prevention and Environmental Equipment" fields={pollutionFields} />
+        <VesselDetailSection title="VI. Cargo Handling Equipment (if applicable)" fields={cargoFields} />
+        <VesselDetailSection title="VII. Certifications" fields={certFields} />
+        <VesselDetailSection title="VIII. Crew Complement" fields={crewFields} />
+        <VesselDetailSection title="IX. Dry Docking and Maintenance History" fields={dockingFields} />
+        <VesselDetailSection title="X. Documents & Attachments" fields={docFields} />
+      </div>
     </div>
   );
 }

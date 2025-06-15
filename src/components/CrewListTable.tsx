@@ -8,7 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { Printer } from "lucide-react";
 
 interface CrewListTableProps {
   crew: CrewMember[];
@@ -38,32 +40,47 @@ const columns: { key: keyof CrewMember; label: string; className?: string }[] = 
 ];
 
 export default function CrewListTable({ crew }: CrewListTableProps) {
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <Card className="mb-6">
-      <div className="relative w-full overflow-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              {columns.map((col) => (
-                <TableHead key={col.key} className={col.className}>
-                  {col.label}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {crew.map((member) => (
-              <TableRow key={member.id}>
+    <Card className="mb-6 print:border-none print:shadow-none">
+      <CardHeader className="flex flex-row items-center justify-between print:hidden">
+        <CardTitle>Crew List</CardTitle>
+        <Button onClick={handlePrint} variant="outline">
+          <Printer className="mr-2 h-4 w-4" />
+          Print / Save as PDF
+        </Button>
+      </CardHeader>
+      <CardContent className="print:p-0">
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50px]">No.</TableHead>
                 {columns.map((col) => (
-                  <TableCell key={col.key} className="whitespace-nowrap">
-                    {String(member[col.key])}
-                  </TableCell>
+                  <TableHead key={col.key} className={col.className}>
+                    {col.label}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {crew.map((member, index) => (
+                <TableRow key={member.id}>
+                  <TableCell className="whitespace-nowrap">{index + 1}</TableCell>
+                  {columns.map((col) => (
+                    <TableCell key={col.key} className="whitespace-nowrap">
+                      {String(member[col.key])}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
     </Card>
   );
 }
