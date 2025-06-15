@@ -7,51 +7,8 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Filter } from "lucide-react";
 import { Label } from "@/components/ui/label";
-
-// Dummy vacation seafarer data
-const vacationers = [
-  {
-    name: "Maria Santos",
-    rank: "2nd Officer",
-    vessel: "MT Pearl of Cebu",
-    vacationSince: "2024-05-10",
-    lastContract: "2023-10-01 to 2024-05-01",
-    status: "Available"
-  },
-  {
-    name: "Jose Dela Cruz",
-    rank: "Chief Cook",
-    vessel: "MV Carabao Spirit",
-    vacationSince: "2024-04-15",
-    lastContract: "2023-09-01 to 2024-04-04",
-    status: "Available"
-  },
-  {
-    name: "Lina Rosales",
-    rank: "3rd Engineer",
-    vessel: "MT Pacific Eagle",
-    vacationSince: "2024-03-28",
-    lastContract: "2023-08-10 to 2024-03-21",
-    status: "Requested"
-  },
-  {
-    name: "Jonathan Perez",
-    rank: "Bosun",
-    vessel: "MV Southern Phoenix",
-    vacationSince: "2024-06-01",
-    lastContract: "2023-11-14 to 2024-05-28",
-    status: "Available"
-  },
-  {
-    name: "Erika Gonzales",
-    rank: "Deck Cadet",
-    vessel: "MV Cherry Queen",
-    vacationSince: "2024-05-20",
-    lastContract: "2023-12-01 to 2024-05-16",
-    status: "On Hold"
-  }
-  // ... (add as many as needed for your app)
-];
+import allCrews from "@/data/dummyCrews";
+import { isAfter, format, subMonths } from "date-fns";
 
 function statusBadge(status: string) {
   switch (status) {
@@ -73,9 +30,40 @@ export default function VacationSeafarersTable() {
     status: "",
   });
 
-  const uniqueRanks = useMemo(() => [...new Set(vacationers.map((v) => v.rank))], []);
-  const uniqueVessels = useMemo(() => [...new Set(vacationers.map((v) => v.vessel))], []);
-  const uniqueStatuses = useMemo(() => [...new Set(vacationers.map((v) => v.status))], []);
+  const vacationers = useMemo(() => {
+    const today = new Date();
+    return allCrews
+      .map(crew => {
+        const endDate = new Date(crew.estimatedReplacementDate);
+        const isOnboard = !isAfter(today, endDate);
+
+        if (isOnboard) {
+          return null;
+        }
+        
+        const lastContractEnd = new Date(crew.estimatedReplacementDate);
+        // The contract start is not directly in the data, but we know it's 9 months before end.
+        const lastContractStart = subMonths(lastContractEnd, 9);
+        
+        const statuses = ["Available", "Requested", "On Hold"];
+        const status = statuses[Math.floor(Math.random() * statuses.length)];
+
+        return {
+            id: crew.id,
+            name: `${crew.firstName} ${crew.lastName}`,
+            rank: crew.rank,
+            vessel: crew.vesselName, // this is their last vessel
+            vacationSince: format(lastContractEnd, "yyyy-MM-dd"),
+            lastContract: `${format(lastContractStart, "yyyy-MM-dd")} to ${format(lastContractEnd, "yyyy-MM-dd")}`,
+            status: status,
+        };
+      })
+      .filter((c): c is NonNullable<typeof c> => c !== null);
+  }, []);
+
+  const uniqueRanks = useMemo(() => [...new Set(vacationers.map((v) => v.rank))], [vacationers]);
+  const uniqueVessels = useMemo(() => [...new Set(vacationers.map((v) => v.vessel))], [vacationers]);
+  const uniqueStatuses = useMemo(() => [...new Set(vacationers.map((v) => v.status))], [vacationers]);
 
   const filteredData = useMemo(() => {
     return vacationers.filter((v) => {
@@ -92,7 +80,7 @@ export default function VacationSeafarersTable() {
       
       return matchesSearch && matchesFilters;
     });
-  }, [searchTerm, filters]);
+  }, [searchTerm, filters, vacationers]);
 
   const handleFilterChange = (filterType: 'rank' | 'vessel' | 'status', value: string) => {
     setFilters(prev => ({...prev, [filterType]: value === 'all' ? '' : value }));
@@ -178,7 +166,7 @@ export default function VacationSeafarersTable() {
           <TableBody>
             {filteredData.length > 0 ? (
               filteredData.map((v) => (
-                <TableRow key={v.name} className="h-10 hover:bg-muted/40">
+                <TableRow key={v.id} className="h-10 hover:bg-muted/40">
                   <TableCell className="px-3 py-2">{v.name}</TableCell>
                   <TableCell className="px-3 py-2">{v.rank}</TableCell>
                   <TableCell className="px-3 py-2">{v.vessel}</TableCell>
