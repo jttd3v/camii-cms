@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import {
   Table,
@@ -86,14 +85,19 @@ const initialPiCases: PICase[] = [
   },
 ];
 
-const statusVariant = (status: string): "default" | "secondary" | "outline" | "destructive" | null | undefined => {
+const statusVariant = (status: PICaseStatus): "default" | "secondary" | "outline" | "destructive" | null | undefined => {
   switch (status) {
     case "Open":
+    case "Draft":
       return "default";
     case "Under Investigation":
+    case "Under Review":
       return "secondary";
     case "Closed":
+    case "Rejected":
       return "destructive";
+    case "Paid":
+      return "default"; // Using default style for 'Paid'
     default:
       return "default";
   }
@@ -222,4 +226,3 @@ const PIModule = () => {
 };
 
 export default PIModule;
-
