@@ -24,26 +24,26 @@ interface CrewListTableProps {
 }
 
 const columns: { key: keyof CrewMember; label: string; className?: string }[] = [
-    { key: 'rank', label: 'Rank', className: 'w-[150px]' },
-    { key: 'lastName', label: 'Last Name', className: 'w-[150px]' },
-    { key: 'firstName', label: 'First Name', className: 'w-[150px]' },
-    { key: 'middleName', label: 'Middle Name', className: 'w-[150px]' },
-    { key: 'suffix', label: 'Suffix', className: 'w-[80px]' },
-    { key: 'higherLicense', label: 'Higher License', className: 'w-[150px]' },
-    { key: 'birthDate', label: 'Birthdate', className: 'w-[120px]' },
-    { key: 'age', label: 'Age', className: 'w-[80px]' },
-    { key: 'address', label: 'Address', className: 'w-[250px]' },
-    { key: 'passportNumber', label: 'Passport No.', className: 'w-[150px]' },
-    { key: 'passportExpiry', label: 'Passport Expiry', className: 'w-[120px]' },
-    { key: 'seamanBookNumber', label: 'Seaman\'s Book No.', className: 'w-[150px]' },
-    { key: 'seamanBookExpiry', label: 'Seaman\'s Book Expiry', className: 'w-[120px]' },
-    { key: 'joinedPort', label: 'Joined Port', className: 'w-[150px]' },
-    { key: 'departedCebu', label: 'Departed Cebu (Date/Time)', className: 'w-[200px]' },
-    { key: 'boardedVessel', label: 'Boarded Vessel (Date/Time)', className: 'w-[200px]' },
-    { key: 'timeOnboard', label: 'Time Onboard', className: 'w-[150px]' },
-    { key: 'contractDuration', label: 'Contract Duration', className: 'w-[150px]' },
-    { key: 'estimatedReplacementDate', label: 'Est. Replacement Date', className: 'w-[180px]' },
-    { key: 'candidateToReplace', label: 'Candidate to Replace', className: 'w-[200px]' },
+    { key: 'rank', label: 'Rank', className: 'w-[45px]' },
+    { key: 'lastName', label: 'Last Name', className: 'w-[60px]' },
+    { key: 'firstName', label: 'First Name', className: 'w-[60px]' },
+    { key: 'middleName', label: 'Middle Name', className: 'w-[60px]' },
+    { key: 'suffix', label: 'Suffix', className: 'w-[30px]' },
+    { key: 'higherLicense', label: 'Higher License', className: 'w-[60px]' },
+    { key: 'birthDate', label: 'Birthdate', className: 'w-[55px]' },
+    { key: 'age', label: 'Age', className: 'w-[25px]' },
+    { key: 'address', label: 'Address', className: 'w-[90px]' },
+    { key: 'passportNumber', label: 'Passport No.', className: 'w-[65px]' },
+    { key: 'passportExpiry', label: 'Passport Expiry', className: 'w-[55px]' },
+    { key: 'seamanBookNumber', label: 'Seaman\'s Book No.', className: 'w-[65px]' },
+    { key: 'seamanBookExpiry', label: 'Seaman\'s Book Expiry', className: 'w-[55px]' },
+    { key: 'joinedPort', label: 'Joined Port', className: 'w-[60px]' },
+    { key: 'departedCebu', label: 'Departed Cebu (Date/Time)', className: 'w-[65px]' },
+    { key: 'boardedVessel', label: 'Boarded Vessel (Date/Time)', className: 'w-[65px]' },
+    { key: 'timeOnboard', label: 'Time Onboard', className: 'w-[45px]' },
+    { key: 'contractDuration', label: 'Contract Duration', className: 'w-[50px]' },
+    { key: 'estimatedReplacementDate', label: 'Est. Replacement Date', className: 'w-[60px]' },
+    { key: 'candidateToReplace', label: 'Candidate to Replace', className: 'w-[70px]' },
 ];
 
 export default function CrewListTable({ crew, vessel }: CrewListTableProps) {
@@ -70,11 +70,11 @@ export default function CrewListTable({ crew, vessel }: CrewListTableProps) {
           </Button>
         </CardHeader>
         <CardContent className="print:p-0">
-          <div className="relative w-full overflow-auto">
-            <Table className="text-[9px]">
+          <div className="relative w-full overflow-auto print:overflow-visible">
+            <Table className="text-[9px] print:table-fixed">
               <TableHeader>
                 <TableRow className="print:break-inside-avoid">
-                  <TableHead className="w-[50px] border border-gray-400 p-1 h-auto text-[9px] font-bold align-top">No.</TableHead>
+                  <TableHead className="w-[25px] border border-gray-400 p-1 h-auto text-[9px] font-bold align-top">No.</TableHead>
                   {columns.map((col) => (
                     <TableHead key={col.key} className={cn("border border-gray-400 p-1 h-auto text-[9px] font-bold align-top", col.className)}>
                       {col.label}
@@ -87,7 +87,7 @@ export default function CrewListTable({ crew, vessel }: CrewListTableProps) {
                   <TableRow key={member.id} className="print:break-inside-avoid even:bg-gray-50 print:even:bg-white">
                     <TableCell className="border border-gray-400 p-1 whitespace-nowrap align-top">{index + 1}</TableCell>
                     {columns.map((col) => (
-                      <TableCell key={col.key} className="border border-gray-400 p-1 whitespace-nowrap align-top">
+                      <TableCell key={col.key} className="border border-gray-400 p-1 align-top">
                         {String(member[col.key])}
                       </TableCell>
                     ))}
