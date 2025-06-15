@@ -1,6 +1,12 @@
-
+import { useState, useMemo } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Filter } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 // Dummy vacation seafarer data
 const vacationers = [
@@ -60,9 +66,103 @@ function statusBadge(status: string) {
 }
 
 export default function VacationSeafarersTable() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({
+    rank: "",
+    vessel: "",
+    status: "",
+  });
+
+  const uniqueRanks = useMemo(() => [...new Set(vacationers.map((v) => v.rank))], []);
+  const uniqueVessels = useMemo(() => [...new Set(vacationers.map((v) => v.vessel))], []);
+  const uniqueStatuses = useMemo(() => [...new Set(vacationers.map((v) => v.status))], []);
+
+  const filteredData = useMemo(() => {
+    return vacationers.filter((v) => {
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch =
+        v.name.toLowerCase().includes(searchLower) ||
+        v.rank.toLowerCase().includes(searchLower) ||
+        v.vessel.toLowerCase().includes(searchLower);
+
+      const matchesFilters =
+        (filters.rank ? v.rank === filters.rank : true) &&
+        (filters.vessel ? v.vessel === filters.vessel : true) &&
+        (filters.status ? v.status === filters.status : true);
+      
+      return matchesSearch && matchesFilters;
+    });
+  }, [searchTerm, filters]);
+
+  const handleFilterChange = (filterType: 'rank' | 'vessel' | 'status', value: string) => {
+    setFilters(prev => ({...prev, [filterType]: value === 'all' ? '' : value }));
+  };
+  
+  const clearFilters = () => {
+    setFilters({ rank: "", vessel: "", status: "" });
+  };
+
   return (
     <section className="px-2 sm:px-4">
       <h2 className="font-semibold text-lg sm:text-xl mb-1 mt-2">Seafarers on Vacation</h2>
+
+      <div className="flex items-center justify-between gap-4 py-4">
+        <Input
+          placeholder="Search by name, rank, or vessel..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm"
+        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="ml-auto text-orange-500 border-orange-500 hover:text-orange-600 hover:border-orange-600 focus-visible:ring-orange-500">
+              <Filter className="mr-2 h-4 w-4" /> Filters
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-4" align="end">
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <h4 className="font-medium leading-none">Filter Results</h4>
+                <p className="text-sm text-muted-foreground">
+                  Refine the list of seafarers.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label>Rank</Label>
+                <Select value={filters.rank} onValueChange={(value) => handleFilterChange('rank', value)}>
+                  <SelectTrigger><SelectValue placeholder="All Ranks" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Ranks</SelectItem>
+                    {uniqueRanks.map(rank => <SelectItem key={rank} value={rank}>{rank}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Last Vessel</Label>
+                <Select value={filters.vessel} onValueChange={(value) => handleFilterChange('vessel', value)}>
+                  <SelectTrigger><SelectValue placeholder="All Vessels" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Vessels</SelectItem>
+                    {uniqueVessels.map(vessel => <SelectItem key={vessel} value={vessel}>{vessel}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={filters.status} onValueChange={(value) => handleFilterChange('status', value)}>
+                  <SelectTrigger><SelectValue placeholder="All Statuses" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    {uniqueStatuses.map(status => <SelectItem key={status} value={status}>{status}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button variant="ghost" onClick={clearFilters} className="w-full justify-center">Clear Filters</Button>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
       <div className="rounded-lg border shadow bg-white overflow-x-auto">
         <Table>
           <TableHeader>
@@ -76,16 +176,24 @@ export default function VacationSeafarersTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {vacationers.map((v) => (
-              <TableRow key={v.name} className="h-10 hover:bg-muted/40">
-                <TableCell className="px-3 py-2">{v.name}</TableCell>
-                <TableCell className="px-3 py-2">{v.rank}</TableCell>
-                <TableCell className="px-3 py-2">{v.vessel}</TableCell>
-                <TableCell className="px-3 py-2">{v.vacationSince}</TableCell>
-                <TableCell className="px-3 py-2">{v.lastContract}</TableCell>
-                <TableCell className="px-3 py-2">{statusBadge(v.status)}</TableCell>
+            {filteredData.length > 0 ? (
+              filteredData.map((v) => (
+                <TableRow key={v.name} className="h-10 hover:bg-muted/40">
+                  <TableCell className="px-3 py-2">{v.name}</TableCell>
+                  <TableCell className="px-3 py-2">{v.rank}</TableCell>
+                  <TableCell className="px-3 py-2">{v.vessel}</TableCell>
+                  <TableCell className="px-3 py-2">{v.vacationSince}</TableCell>
+                  <TableCell className="px-3 py-2">{v.lastContract}</TableCell>
+                  <TableCell className="px-3 py-2">{statusBadge(v.status)}</TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-5 text-muted-foreground">
+                  No seafarers found matching your criteria.
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
