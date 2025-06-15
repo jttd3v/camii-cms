@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
@@ -24,6 +25,8 @@ export default function VesselDetail() {
       </div>
     );
   }
+
+  const vesselCrew = allCrews.filter(c => c.vesselName === vessel.name);
 
   // Helper to safely cast any value to string or empty string if falsy/undefined/null
   const s = (v: unknown) => (v !== null && v !== undefined ? String(v) : "");
