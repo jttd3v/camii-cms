@@ -160,9 +160,3 @@ export default function ContractPlanner({ onBarClick }: Props) {
     </section>
   );
 }
-
-// hack for recharts
-function Cell(props: any) {
-  // @ts-ignore
-  return <g {...props} />;
-}
