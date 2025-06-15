@@ -157,6 +157,13 @@ export default function VesselDetail() {
     { label: "Crew Familiarization Checklists:", value: "", key: "familiar" },
   ];
 
+  const vesselInfoForCrewList = {
+    name: s(vessel.name),
+    flag: s(vessel.flag),
+    owner: s(vessel.owner),
+    manager: "", // manager info not available in dummy data
+  };
+
   return (
     <div className="max-w-full mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <div className="print:hidden">
@@ -170,7 +177,7 @@ export default function VesselDetail() {
         />
       </div>
 
-      {showCrewList && <CrewListTable crew={vesselCrew} />}
+      {showCrewList && <CrewListTable crew={vesselCrew} vessel={vesselInfoForCrewList} />}
 
       <div className="print:hidden">
         <VesselDetailSection title="I. Basic Vessel Particulars" fields={basicFields} />
