@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +14,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogClose,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -40,6 +40,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { PICase, PICaseStatus } from "@/types/pni";
+import { CrewSearch } from "./CrewSearch";
 
 const vessels = ["MV Horizon", "MV Liberty", "MT Aurora", "MV Pacific", "MV Challenger"];
 const incidentTypes = ["Injury", "Illness", "Death", "Collision", "Grounding", "Pollution", "Cargo Damage", "Stowaway"];
@@ -120,6 +121,11 @@ const PICaseForm: React.FC<PICaseFormProps> = ({ open, onClose, onSubmit, caseDa
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>{isEditMode ? "Edit P&I Case" : "Create New P&I Case"}</DialogTitle>
+          <DialogDescription>
+            {isEditMode
+              ? `Update the details for case ${caseData.id}.`
+              : "Fill in the form to create a new P&I case. Search for a crew member to auto-fill their details."}
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6 max-h-[80vh] overflow-y-auto pr-4">
@@ -166,12 +172,41 @@ const PICaseForm: React.FC<PICaseFormProps> = ({ open, onClose, onSubmit, caseDa
                   </FormItem>
                 )}
               />
-              <FormField control={form.control} name="crewMember" render={({ field }) => (
-                  <FormItem><FormLabel>Crew Member Full Name</FormLabel><FormControl><Input placeholder="e.g., John Doe" {...field} /></FormControl><FormMessage /></FormItem>
-              )}/>
-              <FormField control={form.control} name="crewRank" render={({ field }) => (
-                  <FormItem><FormLabel>Crew Member Rank</FormLabel><FormControl><Input placeholder="e.g., Chief Officer" {...field} /></FormControl><FormMessage /></FormItem>
-              )}/>
+              <FormField
+                control={form.control}
+                name="crewMember"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Crew Member Full Name</FormLabel>
+                    <CrewSearch
+                      value={field.value}
+                      onSelect={(crew) => {
+                        form.setValue("crewMember", `${crew.firstName} ${crew.lastName}`, { shouldValidate: true });
+                        form.setValue("crewRank", crew.rank, { shouldValidate: true });
+                      }}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="crewRank"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Crew Member Rank</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Auto-filled from crew selection"
+                        {...field}
+                        readOnly
+                        className="bg-gray-100 dark:bg-gray-800"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
                <FormField control={form.control} name="incidentDate" render={({ field }) => (
                   <FormItem className="flex flex-col"><FormLabel>Incident Date</FormLabel>
                     <Popover><PopoverTrigger asChild>
