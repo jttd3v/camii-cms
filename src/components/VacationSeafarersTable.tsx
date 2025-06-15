@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Filter } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import allCrews from "@/data/dummyCrews";
-import { isAfter, format, subMonths } from "date-fns";
+import { isAfter, format, subMonths, intervalToDuration } from "date-fns";
 
 function statusBadge(status: string) {
   switch (status) {
@@ -48,12 +49,18 @@ export default function VacationSeafarersTable() {
         const statuses = ["Available", "Requested", "On Hold"];
         const status = statuses[Math.floor(Math.random() * statuses.length)];
 
+        const vacationDuration = intervalToDuration({ start: lastContractEnd, end: today });
+        const years = vacationDuration.years || 0;
+        const months = (years * 12) + (vacationDuration.months || 0);
+        const days = vacationDuration.days || 0;
+        const formattedDuration = `${months} Mos. ${days} Days`;
+
         return {
             id: crew.id,
             name: `${crew.firstName} ${crew.lastName}`,
             rank: crew.rank,
             vessel: crew.vesselName, // this is their last vessel
-            vacationSince: format(lastContractEnd, "yyyy-MM-dd"),
+            vacationSince: formattedDuration,
             lastContract: `${format(lastContractStart, "yyyy-MM-dd")} to ${format(lastContractEnd, "yyyy-MM-dd")}`,
             status: status,
         };
@@ -158,7 +165,7 @@ export default function VacationSeafarersTable() {
               <TableHead className="px-3 py-2">Name</TableHead>
               <TableHead className="px-3 py-2">Rank</TableHead>
               <TableHead className="px-3 py-2">Last Vessel</TableHead>
-              <TableHead className="px-3 py-2">Vacation Since</TableHead>
+              <TableHead className="px-3 py-2">Vacation Duration</TableHead>
               <TableHead className="px-3 py-2">Last Contract</TableHead>
               <TableHead className="px-3 py-2">Status</TableHead>
             </TableRow>
