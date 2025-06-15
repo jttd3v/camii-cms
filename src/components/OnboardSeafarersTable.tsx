@@ -10,84 +10,6 @@ import { Label } from "@/components/ui/label";
 import allCrews from "@/data/dummyCrews";
 import { isAfter } from "date-fns";
 
-// Demo data, mirrors contract summary from ContractTable/CrewCard
-const contracts = [
-  {
-    id: "c001",
-    crewName: "Antonio Reyes",
-    vessel: "MV Horizon",
-    rank: "Chief Engineer",
-    signOn: "2024-03-01",
-    signOff: "2025-01-10",
-    status: "EXTENDED",
-    compliance: "WARNING",
-    extensionReason: "Trade route delay",
-  },
-  {
-    id: "c002",
-    crewName: "Julia Tan",
-    vessel: "MV Liberty",
-    rank: "Captain",
-    signOn: "2023-08-15",
-    signOff: "2024-07-01",
-    status: "ACTIVE",
-    compliance: "OK",
-  },
-  {
-    id: "c003",
-    crewName: "Gleb Ivanov",
-    vessel: "MT Aurora",
-    rank: "AB",
-    signOn: "2022-12-01",
-    signOff: "2023-11-28",
-    status: "OVERDUE",
-    compliance: "VIOLATION",
-  },
-  {
-    id: "c004",
-    crewName: "Jorge Cruz",
-    vessel: "MV Pacific",
-    rank: "CO",
-    signOn: "2024-01-20",
-    signOff: "2024-07-19",
-    status: "EXPIRED",
-    compliance: "VIOLATION",
-  },
-];
-
-// Only show seafarers who are currently onboard, i.e., status is ACTIVE or EXTENDED
-const baseOnboardContracts = useMemo(() => {
-  const today = new Date();
-  return allCrews
-    .map(crew => {
-      const endDate = new Date(crew.estimatedReplacementDate);
-      // Crew is considered "onboard" if their contract has not ended yet.
-      const isOnboard = !isAfter(today, endDate);
-
-      if (!isOnboard) {
-        return null;
-      }
-
-      // To add some data variety for demonstration
-      const isExtended = Math.random() > 0.8; // 20% chance
-      const status = isExtended ? "EXTENDED" : "ACTIVE";
-      const compliance = Math.random() > 0.9 ? "WARNING" : "OK"; // 10% chance
-
-      return {
-        id: crew.id,
-        crewName: `${crew.firstName} ${crew.lastName}`,
-        vessel: crew.vesselName,
-        rank: crew.rank,
-        signOn: crew.boardedVessel.split(' ')[0],
-        signOff: crew.estimatedReplacementDate,
-        status,
-        compliance,
-        extensionReason: status === "EXTENDED" ? "Operational requirement" : "",
-      };
-    })
-    .filter((c): c is NonNullable<typeof c> => c !== null);
-}, []);
-
 function statusBadge(status: string) {
   switch (status) {
     case "ACTIVE":
@@ -117,6 +39,39 @@ export default function OnboardSeafarersTable() {
     vessel: "",
     status: "",
   });
+
+  // Only show seafarers who are currently onboard, i.e., status is ACTIVE or EXTENDED
+  const baseOnboardContracts = useMemo(() => {
+    const today = new Date();
+    return allCrews
+      .map(crew => {
+        const endDate = new Date(crew.estimatedReplacementDate);
+        // Crew is considered "onboard" if their contract has not ended yet.
+        const isOnboard = !isAfter(today, endDate);
+
+        if (!isOnboard) {
+          return null;
+        }
+
+        // To add some data variety for demonstration
+        const isExtended = Math.random() > 0.8; // 20% chance
+        const status = isExtended ? "EXTENDED" : "ACTIVE";
+        const compliance = Math.random() > 0.9 ? "WARNING" : "OK"; // 10% chance
+
+        return {
+          id: crew.id,
+          crewName: `${crew.firstName} ${crew.lastName}`,
+          vessel: crew.vesselName,
+          rank: crew.rank,
+          signOn: crew.boardedVessel.split(' ')[0],
+          signOff: crew.estimatedReplacementDate,
+          status,
+          compliance,
+          extensionReason: status === "EXTENDED" ? "Operational requirement" : "",
+        };
+      })
+      .filter((c): c is NonNullable<typeof c> => c !== null);
+  }, []);
 
   const uniqueRanks = useMemo(() => [...new Set(baseOnboardContracts.map((c) => c.rank))], [baseOnboardContracts]);
   const uniqueVessels = useMemo(() => [...new Set(baseOnboardContracts.map((c) => c.vessel))], [baseOnboardContracts]);
