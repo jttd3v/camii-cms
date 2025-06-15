@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, QrCode, ArrowDown } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PIModule from "@/components/PIModule";
+import CrewChangeTab from "@/components/CrewChangeTab";
 
 const Index = () => {
   const [selectedCrewId, setSelectedCrewId] = useState<string | null>(null);
@@ -36,6 +37,7 @@ const Index = () => {
             <TabsTrigger value="onboard">Onboard Seafarers</TabsTrigger>
             <TabsTrigger value="vacation">Vacation Seafarers</TabsTrigger>
             <TabsTrigger value="vessels">All Vessels</TabsTrigger>
+            <TabsTrigger value="crew-change">Crew Change</TabsTrigger>
             <TabsTrigger value="pni">P&I</TabsTrigger>
           </TabsList>
           <TabsContent value="dashboard">
@@ -74,6 +76,9 @@ const Index = () => {
           </TabsContent>
           <TabsContent value="vessels">
             <AllVesselsTab />
+          </TabsContent>
+          <TabsContent value="crew-change">
+            <CrewChangeTab />
           </TabsContent>
           <TabsContent value="pni">
             <PIModule />
