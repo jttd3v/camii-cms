@@ -47,7 +47,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const vessels = ["MV Horizon", "MV Liberty", "MT Aurora", "MV Pacific", "MV Challenger"];
 const incidentTypes = ["Personal Injury", "Illness", "Death", "Cargo Damage", "Collision", "Pollution", "FFO (Fixed and Floating Object)", "Wreck Removal", "Stowaway", "Grounding"];
-const statuses: PICaseStatus[] = ["Draft", "Open", "Under Investigation", "Under Review", "Paid", "Rejected", "Closed"];
+const statuses = ["Draft", "Open", "Under Investigation", "Under Review", "Paid", "Rejected", "Closed"] as const;
 
 const formSchema = z.object({
   vessel: z.string().min(1, "Vessel is required."),
