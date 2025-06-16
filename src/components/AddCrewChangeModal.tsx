@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -9,11 +8,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CrewSearch } from "./CrewSearch";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Ship, MapPin, Plane, Upload, AlertTriangle } from "lucide-react";
+import { CalendarDays, Ship, MapPin, Plane, Upload, AlertTriangle, Plus, X } from "lucide-react";
 
 interface AddCrewChangeModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface SeafarerEntry {
+  id: string;
+  selectedSeafarer: any;
+  searchValue: string;
 }
 
 const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => {
@@ -21,8 +26,6 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
     vessel: "",
     proposedDate: "",
     port: "",
-    onSigner: "",
-    offSigner: "",
     flightDetails: "",
     accommodation: "",
     transportation: "",
@@ -30,20 +33,65 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
     remarks: ""
   });
 
-  const [selectedOnSigner, setSelectedOnSigner] = useState(null);
-  const [selectedOffSigner, setSelectedOffSigner] = useState(null);
+  const [onSigners, setOnSigners] = useState<SeafarerEntry[]>([
+    { id: "on-1", selectedSeafarer: null, searchValue: "" }
+  ]);
+  
+  const [offSigners, setOffSigners] = useState<SeafarerEntry[]>([
+    { id: "off-1", selectedSeafarer: null, searchValue: "" }
+  ]);
+
+  const addOnSigner = () => {
+    const newId = `on-${Date.now()}`;
+    setOnSigners([...onSigners, { id: newId, selectedSeafarer: null, searchValue: "" }]);
+  };
+
+  const addOffSigner = () => {
+    const newId = `off-${Date.now()}`;
+    setOffSigners([...offSigners, { id: newId, selectedSeafarer: null, searchValue: "" }]);
+  };
+
+  const removeOnSigner = (id: string) => {
+    if (onSigners.length > 1) {
+      setOnSigners(onSigners.filter(signer => signer.id !== id));
+    }
+  };
+
+  const removeOffSigner = (id: string) => {
+    if (offSigners.length > 1) {
+      setOffSigners(offSigners.filter(signer => signer.id !== id));
+    }
+  };
+
+  const updateOnSigner = (id: string, crew: any) => {
+    setOnSigners(onSigners.map(signer => 
+      signer.id === id 
+        ? { ...signer, selectedSeafarer: crew, searchValue: `${crew.firstName} ${crew.lastName}` }
+        : signer
+    ));
+  };
+
+  const updateOffSigner = (id: string, crew: any) => {
+    setOffSigners(offSigners.map(signer => 
+      signer.id === id 
+        ? { ...signer, selectedSeafarer: crew, searchValue: `${crew.firstName} ${crew.lastName}` }
+        : signer
+    ));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    console.log("Form submitted:", {
+      formData,
+      onSigners: onSigners.filter(s => s.selectedSeafarer),
+      offSigners: offSigners.filter(s => s.selectedSeafarer)
+    });
     onOpenChange(false);
   };
 
   const renderSeafarerDetails = (seafarer: any, type: "on" | "off") => {
     if (!seafarer) return null;
 
-    // Mock document data for demonstration
     const mockDocuments = {
       passport: { expiry: "2025-12-15", status: "valid" },
       visa: { expiry: "2024-08-30", status: "warning" },
@@ -54,7 +102,7 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
     return (
       <Card className="mt-3">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">{type === "on" ? "On-Signer" : "Off-Signer"} Details</CardTitle>
+          <CardTitle className="text-sm">Seafarer Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-4 text-sm">
@@ -80,7 +128,11 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
                   <span className="capitalize">{doc}:</span>
                   <div className="flex items-center gap-1">
                     <span>{info.expiry}</span>
-                    {info.status === "warning" && <AlertTriangle className="h-3 w-3 text-orange-500" />}
+                    {info.status === "valid" ? (
+                      <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
+                    ) : (
+                      <AlertTriangle className="h-3 w-3 text-orange-500 cursor-pointer" title="Document expiring soon" />
+                    )}
                   </div>
                 </div>
               ))}
@@ -93,7 +145,7 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Crew Change</DialogTitle>
           <DialogDescription>
@@ -155,7 +207,7 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
             </CardContent>
           </Card>
 
-          {/* Seafarer Selection */}
+          {/* Dynamic Seafarer Selection */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -163,30 +215,74 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
                 Seafarer Selection
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label>On-Signer (Joining)</Label>
-                  <CrewSearch
-                    value={formData.onSigner}
-                    onSelect={(crew) => {
-                      setSelectedOnSigner(crew);
-                      setFormData(prev => ({...prev, onSigner: `${crew.firstName} ${crew.lastName}`}));
-                    }}
-                  />
-                  {renderSeafarerDetails(selectedOnSigner, "on")}
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* On-Signers Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-semibold">On-Signers (Joining)</Label>
+                    <Button type="button" variant="outline" size="sm" onClick={addOnSigner}>
+                      <Plus className="h-3 w-3 mr-1" />
+                      Add On-Signer
+                    </Button>
+                  </div>
+                  
+                  {onSigners.map((signer, index) => (
+                    <div key={signer.id} className="relative border rounded-lg p-4 space-y-3">
+                      {onSigners.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-2 right-2 h-6 w-6 p-0"
+                          onClick={() => removeOnSigner(signer.id)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      )}
+                      
+                      <Label>On-Signer {index + 1}</Label>
+                      <CrewSearch
+                        value={signer.searchValue}
+                        onSelect={(crew) => updateOnSigner(signer.id, crew)}
+                      />
+                      {renderSeafarerDetails(signer.selectedSeafarer, "on")}
+                    </div>
+                  ))}
                 </div>
 
-                <div>
-                  <Label>Off-Signer (Leaving)</Label>
-                  <CrewSearch
-                    value={formData.offSigner}
-                    onSelect={(crew) => {
-                      setSelectedOffSigner(crew);
-                      setFormData(prev => ({...prev, offSigner: `${crew.firstName} ${crew.lastName}`}));
-                    }}
-                  />
-                  {renderSeafarerDetails(selectedOffSigner, "off")}
+                {/* Off-Signers Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-base font-semibold">Off-Signers (Leaving)</Label>
+                    <Button type="button" variant="outline" size="sm" onClick={addOffSigner}>
+                      <Plus className="h-3 w-3 mr-1" />
+                      Add Off-Signer
+                    </Button>
+                  </div>
+                  
+                  {offSigners.map((signer, index) => (
+                    <div key={signer.id} className="relative border rounded-lg p-4 space-y-3">
+                      {offSigners.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-2 right-2 h-6 w-6 p-0"
+                          onClick={() => removeOffSigner(signer.id)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      )}
+                      
+                      <Label>Off-Signer {index + 1}</Label>
+                      <CrewSearch
+                        value={signer.searchValue}
+                        onSelect={(crew) => updateOffSigner(signer.id, crew)}
+                      />
+                      {renderSeafarerDetails(signer.selectedSeafarer, "off")}
+                    </div>
+                  ))}
                 </div>
               </div>
             </CardContent>

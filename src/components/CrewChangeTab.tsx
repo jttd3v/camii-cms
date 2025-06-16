@@ -1,15 +1,15 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, Calendar, Clock, Users, Plus } from "lucide-react";
+import { AlertTriangle, Calendar, Clock, Users, Plus, Printer } from "lucide-react";
 import CrewChangeUpcoming from "./CrewChangeUpcoming";
 import CrewChangeActive from "./CrewChangeActive";
 import CrewChangeHistory from "./CrewChangeHistory";
 import CrewChangeCompliance from "./CrewChangeCompliance";
 import AddCrewChangeModal from "./AddCrewChangeModal";
+import CrewChangePrintDialog from "./CrewChangePrintDialog";
 
 // Mock data for KPIs
 const mockKPIs = {
@@ -60,6 +60,13 @@ const mockActiveChanges = [
 
 const CrewChangeTab = () => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showPrintDialog, setShowPrintDialog] = useState(false);
+  const [selectedCrewChange, setSelectedCrewChange] = useState(null);
+
+  const handlePrintItinerary = (crewChange: any) => {
+    setSelectedCrewChange(crewChange);
+    setShowPrintDialog(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -133,9 +140,15 @@ const CrewChangeTab = () => {
                     {change.status}
                   </Badge>
                 </div>
-                <Button variant="outline" size="sm">
-                  View Details
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm">
+                    View Details
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handlePrintItinerary(change)}>
+                    <Printer className="h-3 w-3 mr-1" />
+                    Print Itinerary
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -192,6 +205,13 @@ const CrewChangeTab = () => {
       <AddCrewChangeModal 
         open={showAddModal} 
         onOpenChange={setShowAddModal} 
+      />
+
+      {/* Print Dialog */}
+      <CrewChangePrintDialog
+        open={showPrintDialog}
+        onOpenChange={setShowPrintDialog}
+        crewChangeData={selectedCrewChange}
       />
     </div>
   );

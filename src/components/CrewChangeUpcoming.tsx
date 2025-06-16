@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,17 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import CustomizableTable, { ColumnConfig } from "./CustomizableTable";
-import { Search, Filter, Plus, Eye, Edit, Check } from "lucide-react";
+import { Search, Filter, Plus, Eye, Edit, Check, Users } from "lucide-react";
 
-// Mock data for upcoming crew changes
+// Mock data for upcoming crew changes - updated to include counts
 const mockUpcomingData = [
   {
     id: "CC-2024-006",
     vessel: "MV Pacific Star",
-    onSigner: "Juan Dela Cruz",
-    onSignerRank: "Chief Engineer",
-    offSigner: "Pedro Santos",
-    offSignerRank: "Chief Engineer", 
+    onSignerCount: 3,
+    offSignerCount: 2,
     plannedDate: "2024-06-25",
     port: "Manila",
     status: "Planned"
@@ -24,21 +21,17 @@ const mockUpcomingData = [
   {
     id: "CC-2024-007",
     vessel: "MV Ocean Explorer",
-    onSigner: "Maria Garcia",
-    onSignerRank: "2nd Officer",
-    offSigner: "Carlos Reyes",
-    offSignerRank: "2nd Officer",
+    onSignerCount: 1,
+    offSignerCount: 1,
     plannedDate: "2024-06-28",
     port: "Cebu",
     status: "Approved"
   },
   {
     id: "CC-2024-008",
-    vessel: "MV Atlantic Voyager", 
-    onSigner: "Roberto Cruz",
-    onSignerRank: "Bosun",
-    offSigner: "Miguel Torres",
-    offSignerRank: "Bosun",
+    vessel: "MV Atlantic Voyager",
+    onSignerCount: 2,
+    offSignerCount: 3,
     plannedDate: "2024-07-02",
     port: "Davao",
     status: "Travel Arranged"
@@ -67,28 +60,28 @@ const CrewChangeUpcoming = () => {
       minWidth: 150
     },
     {
-      key: "onSigner",
-      label: "On-Signer",
+      key: "onSignerCount",
+      label: "On-Signer Count",
       visible: true,
       sortable: true,
-      minWidth: 200,
-      render: (value, row) => (
-        <div>
-          <div className="font-medium">{value}</div>
-          <div className="text-sm text-muted-foreground">{row.onSignerRank}</div>
+      minWidth: 140,
+      render: (value) => (
+        <div className="flex items-center gap-2">
+          <Users className="h-4 w-4 text-green-600" />
+          <span className="font-medium text-green-600">{value}</span>
         </div>
       )
     },
     {
-      key: "offSigner",
-      label: "Off-Signer", 
+      key: "offSignerCount",
+      label: "Off-Signer Count", 
       visible: true,
       sortable: true,
-      minWidth: 200,
-      render: (value, row) => (
-        <div>
-          <div className="font-medium">{value}</div>
-          <div className="text-sm text-muted-foreground">{row.offSignerRank}</div>
+      minWidth: 140,
+      render: (value) => (
+        <div className="flex items-center gap-2">
+          <Users className="h-4 w-4 text-orange-600" />
+          <span className="font-medium text-orange-600">{value}</span>
         </div>
       )
     },
@@ -101,10 +94,10 @@ const CrewChangeUpcoming = () => {
     },
     {
       key: "port",
-      label: "Port",
+      label: "Port/Location",
       visible: true,
       sortable: true,
-      minWidth: 100
+      minWidth: 120
     },
     {
       key: "status",
@@ -156,9 +149,7 @@ const CrewChangeUpcoming = () => {
   const filteredData = mockUpcomingData.filter(item => {
     const matchesSearch = searchTerm === "" || 
       item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.vessel.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.onSigner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.offSigner.toLowerCase().includes(searchTerm.toLowerCase());
+      item.vessel.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || item.status === statusFilter;
     const matchesVessel = vesselFilter === "all" || item.vessel === vesselFilter;
