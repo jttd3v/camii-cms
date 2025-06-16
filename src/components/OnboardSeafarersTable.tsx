@@ -1,15 +1,16 @@
+
 import { useState, useMemo } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Filter } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import allCrews from "@/data/dummyCrews";
 import { isAfter } from "date-fns";
+import CustomizableTable, { ColumnConfig } from "./CustomizableTable";
 
 function statusBadge(status: string) {
   switch (status) {
@@ -82,6 +83,15 @@ export default function OnboardSeafarersTable() {
     status: "",
   });
   const [selectedCompliance, setSelectedCompliance] = useState<{crewName: string, compliance: string} | null>(null);
+  const [columns, setColumns] = useState<ColumnConfig[]>([
+    { key: "crewName", label: "Name", visible: true, sortable: true, minWidth: 120 },
+    { key: "rank", label: "Rank", visible: true, sortable: true, minWidth: 100 },
+    { key: "vessel", label: "Vessel", visible: true, sortable: true, minWidth: 120 },
+    { key: "signOn", label: "Sign On", visible: true, sortable: true, minWidth: 100 },
+    { key: "signOff", label: "Sign Off", visible: true, sortable: true, minWidth: 100 },
+    { key: "status", label: "Status", visible: true, sortable: true, minWidth: 80, render: (value) => statusBadge(value) },
+    { key: "compliance", label: "Compliance", visible: true, sortable: true, minWidth: 100, render: (value, row) => complianceBadge(value, () => handleComplianceClick(row.crewName, value)) },
+  ]);
 
   // Only show seafarers who are currently onboard, i.e., status is ACTIVE or EXTENDED
   const baseOnboardContracts = useMemo(() => {
@@ -212,47 +222,15 @@ export default function OnboardSeafarersTable() {
         </Popover>
       </div>
 
-      <div className="rounded-lg border shadow bg-white overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow className="h-10">
-              <TableHead className="px-3 py-2">Name</TableHead>
-              <TableHead className="px-3 py-2">Rank</TableHead>
-              <TableHead className="px-3 py-2">Vessel</TableHead>
-              <TableHead className="px-3 py-2">Sign On</TableHead>
-              <TableHead className="px-3 py-2">Sign Off</TableHead>
-              <TableHead className="px-3 py-2">Status</TableHead>
-              <TableHead className="px-3 py-2">Compliance</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-5 text-muted-foreground">
-                  No seafarers found matching your criteria.
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredData.map((c) => (
-                <TableRow key={c.id} className="h-10 hover:bg-muted/40">
-                  <TableCell className="px-3 py-2">{c.crewName}</TableCell>
-                  <TableCell className="px-3 py-2">{c.rank}</TableCell>
-                  <TableCell className="px-3 py-2">{c.vessel}</TableCell>
-                  <TableCell className="px-3 py-2">{c.signOn}</TableCell>
-                  <TableCell className="px-3 py-2">{c.signOff}</TableCell>
-                  <TableCell className="px-3 py-2">{statusBadge(c.status)}</TableCell>
-                  <TableCell className="px-3 py-2">
-                    {complianceBadge(c.compliance, () => handleComplianceClick(c.crewName, c.compliance))}
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <CustomizableTable
+        data={filteredData}
+        columns={columns}
+        onColumnsChange={setColumns}
+        emptyMessage="No seafarers found matching your criteria."
+      />
       
       <div className="text-xs text-muted-foreground mt-1 mb-2">
-        Showing all seafarers with an active or extended contract.
+        Showing all seafarers with an active or extended contract. Right-click column headers to customize view.
       </div>
 
       {/* Compliance Details Dialog */}
