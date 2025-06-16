@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Filter } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import allCrews from "@/data/dummyCrews";
@@ -21,14 +22,55 @@ function statusBadge(status: string) {
   }
 }
 
-function complianceBadge(compliance: string) {
-  switch (compliance) {
-    case "OK":
-      return <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 px-2 py-0.5">{compliance}</Badge>;
-    case "WARNING":
-      return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-200 px-2 py-0.5">{compliance}</Badge>;
-    default:
-      return <Badge variant="destructive" className="bg-red-100 text-red-800 border-red-200 px-2 py-0.5">{compliance}</Badge>;
+function complianceBadge(compliance: string, onClick?: () => void) {
+  const badgeClass = compliance === "OK" 
+    ? "bg-green-100 text-green-800 border-green-200 px-2 py-0.5"
+    : compliance === "WARNING"
+    ? "bg-yellow-100 text-yellow-800 border-yellow-200 px-2 py-0.5 cursor-pointer hover:bg-yellow-200"
+    : "bg-red-100 text-red-800 border-red-200 px-2 py-0.5 cursor-pointer hover:bg-red-200";
+
+  const variant = compliance === "OK" ? "secondary" : "destructive";
+
+  return (
+    <Badge 
+      variant={variant} 
+      className={badgeClass}
+      onClick={onClick}
+    >
+      {compliance}
+    </Badge>
+  );
+}
+
+// Function to generate compliance details based on status
+function getComplianceDetails(compliance: string, crewName: string) {
+  if (compliance === "OK") {
+    return {
+      title: "Compliance Status: OK",
+      details: [
+        "All certifications are current and valid",
+        "Medical certificates are up to date",
+        "No outstanding compliance issues"
+      ]
+    };
+  } else if (compliance === "WARNING") {
+    return {
+      title: "Compliance Warning",
+      details: [
+        "STCW certificate expires in 30 days",
+        "Medical certificate expires in 45 days",
+        "Recommend scheduling renewal soon"
+      ]
+    };
+  } else {
+    return {
+      title: "Compliance Violation",
+      details: [
+        "STCW certificate has expired",
+        "Medical certificate expired 15 days ago",
+        "Immediate action required - crew member should be relieved"
+      ]
+    };
   }
 }
 
@@ -39,6 +81,7 @@ export default function OnboardSeafarersTable() {
     vessel: "",
     status: "",
   });
+  const [selectedCompliance, setSelectedCompliance] = useState<{crewName: string, compliance: string} | null>(null);
 
   // Only show seafarers who are currently onboard, i.e., status is ACTIVE or EXTENDED
   const baseOnboardContracts = useMemo(() => {
@@ -100,6 +143,12 @@ export default function OnboardSeafarersTable() {
   
   const clearFilters = () => {
       setFilters({ rank: "", vessel: "", status: "" });
+  };
+
+  const handleComplianceClick = (crewName: string, compliance: string) => {
+    if (compliance !== "OK") {
+      setSelectedCompliance({ crewName, compliance });
+    }
   };
 
   return (
@@ -192,16 +241,48 @@ export default function OnboardSeafarersTable() {
                   <TableCell className="px-3 py-2">{c.signOn}</TableCell>
                   <TableCell className="px-3 py-2">{c.signOff}</TableCell>
                   <TableCell className="px-3 py-2">{statusBadge(c.status)}</TableCell>
-                  <TableCell className="px-3 py-2">{complianceBadge(c.compliance)}</TableCell>
+                  <TableCell className="px-3 py-2">
+                    {complianceBadge(c.compliance, () => handleComplianceClick(c.crewName, c.compliance))}
+                  </TableCell>
                 </TableRow>
               ))
             )}
           </TableBody>
         </Table>
       </div>
+      
       <div className="text-xs text-muted-foreground mt-1 mb-2">
         Showing all seafarers with an active or extended contract.
       </div>
+
+      {/* Compliance Details Dialog */}
+      <Dialog open={!!selectedCompliance} onOpenChange={() => setSelectedCompliance(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedCompliance && getComplianceDetails(selectedCompliance.compliance, selectedCompliance.crewName).title}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-medium mb-2">Crew Member: {selectedCompliance?.crewName}</h4>
+              <div className="space-y-2">
+                {selectedCompliance && getComplianceDetails(selectedCompliance.compliance, selectedCompliance.crewName).details.map((detail, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                      selectedCompliance.compliance === "WARNING" ? "bg-yellow-500" : "bg-red-500"
+                    }`} />
+                    <p className="text-sm text-muted-foreground">{detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <Button onClick={() => setSelectedCompliance(null)} className="w-full">
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
