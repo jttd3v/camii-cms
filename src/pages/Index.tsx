@@ -4,6 +4,7 @@ import CrewCard from "@/components/CrewCard";
 import VacationSeafarersTable from "@/components/VacationSeafarersTable";
 import OnboardSeafarersTable from "@/components/OnboardSeafarersTable";
 import AllVesselsTab from "@/components/AllVesselsTab";
+import SeafarerApplicationForm from "@/components/SeafarerApplicationForm";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileText, QrCode, ArrowDown } from "lucide-react";
@@ -39,6 +40,7 @@ const Index = () => {
             <TabsTrigger value="vacation">Vacation Seafarers</TabsTrigger>
             <TabsTrigger value="vessels">All Vessels</TabsTrigger>
             <TabsTrigger value="crew-change">Crew Change</TabsTrigger>
+            <TabsTrigger value="application">Seafarer Application</TabsTrigger>
             <TabsTrigger value="pni">P&I</TabsTrigger>
           </TabsList>
           <TabsContent value="dashboard">
@@ -82,6 +84,9 @@ const Index = () => {
           </TabsContent>
           <TabsContent value="crew-change">
             <CrewChangeTab />
+          </TabsContent>
+          <TabsContent value="application">
+            <SeafarerApplicationForm />
           </TabsContent>
           <TabsContent value="pni">
             <PIModule />
