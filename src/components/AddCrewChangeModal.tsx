@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -131,7 +132,7 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
                     {info.status === "valid" ? (
                       <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">✓</div>
                     ) : (
-                      <AlertTriangle className="h-3 w-3 text-orange-500 cursor-pointer" title="Document expiring soon" />
+                      <AlertTriangle className="h-3 w-3 text-orange-500 cursor-pointer" />
                     )}
                   </div>
                 </div>
