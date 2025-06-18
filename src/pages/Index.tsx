@@ -7,11 +7,12 @@ import AllVesselsTab from "@/components/AllVesselsTab";
 import SeafarerApplicationForm from "@/components/SeafarerApplicationForm";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileText, QrCode, ArrowDown } from "lucide-react";
+import { FileText, QrCode, ArrowDown, Download, Upload } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PIModule from "@/components/PIModule";
 import CrewChangeTab from "@/components/CrewChangeTab";
 import CrewRotationTab from "@/components/CrewRotationTab";
+import DatabaseMigrationButtons from "@/components/DatabaseMigrationButtons";
 
 const Index = () => {
   const [selectedCrewId, setSelectedCrewId] = useState<string | null>(null);
@@ -26,9 +27,10 @@ const Index = () => {
             Centralized dashboard for contract tracking, compliance, and audit readiness.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button variant="outline"><FileText className="mr-2 h-4 w-4" /> Export PDF </Button>
           <Button variant="outline"><QrCode className="mr-2 h-4 w-4" /> QR Export</Button>
+          <DatabaseMigrationButtons />
         </div>
       </header>
       <main className="flex flex-col gap-8 px-12">
