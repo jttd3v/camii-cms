@@ -104,7 +104,7 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
         <form onSubmit={handleSubmit} className="space-y-6">
           <CrewChangeBasicInfo 
             formData={formData}
-            onFormDataChange={handleFormDataChange}
+            setFormData={setFormData}
           />
 
           <CrewChangeSeafarerSelection
@@ -120,7 +120,7 @@ const AddCrewChangeModal = ({ open, onOpenChange }: AddCrewChangeModalProps) => 
 
           <CrewChangeTravelLogistics 
             formData={formData}
-            onFormDataChange={handleFormDataChange}
+            setFormData={setFormData}
           />
 
           <CrewChangeDocumentUpload />
