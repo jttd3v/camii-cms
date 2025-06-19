@@ -1,5 +1,6 @@
 
 import { Vessel, Seafarer, Contract, LineupRequest, MobilisationRecord, HandoverChecklist, PerformanceEvaluation } from '@/types/crewRotation';
+import { addMonths, subMonths, format, addDays } from 'date-fns';
 
 // Mock data service - in real implementation, this would connect to Supabase
 class CrewRotationService {
@@ -17,7 +18,7 @@ class CrewRotationService {
         dwt: 75000,
         status: "active",
         created_at: "2024-01-01T00:00:00Z",
-        updated_at: "2024-06-19T00:00:00Z"
+        updated_at: new Date().toISOString()
       },
       {
         id: "vessel-2", 
@@ -28,26 +29,30 @@ class CrewRotationService {
         dwt: 85000,
         status: "active",
         created_at: "2024-01-01T00:00:00Z",
-        updated_at: "2024-06-19T00:00:00Z"
+        updated_at: new Date().toISOString()
       }
     ];
   }
 
   async getActiveContracts(): Promise<Contract[]> {
+    const now = new Date();
+    const contractStart = subMonths(now, 4); // Started 4 months ago
+    const contractEnd = addMonths(contractStart, 9); // 9-month contract
+    
     return [
       {
         id: "contract-1",
         seafarer_id: "seafarer-1",
         vessel_id: "vessel-1", 
         position_id: "pos-master",
-        start_date: "2024-01-15",
-        end_date: "2024-07-15",
+        start_date: format(contractStart, 'yyyy-MM-dd'),
+        end_date: format(contractEnd, 'yyyy-MM-dd'),
         status: "active",
         salary: 8500,
         currency: "USD",
         contract_type: "temporary",
-        created_at: "2024-01-01T00:00:00Z",
-        updated_at: "2024-01-01T00:00:00Z"
+        created_at: format(contractStart, 'yyyy-MM-dd') + "T00:00:00Z",
+        updated_at: new Date().toISOString()
       }
     ];
   }
@@ -72,7 +77,7 @@ class CrewRotationService {
         },
         availability_status: "available",
         created_at: "2024-01-01T00:00:00Z",
-        updated_at: "2024-06-19T00:00:00Z"
+        updated_at: new Date().toISOString()
       }
     ];
   }
@@ -97,6 +102,9 @@ class CrewRotationService {
   }
 
   async getPendingLineupRequests(): Promise<LineupRequest[]> {
+    const now = new Date();
+    const proposedJoinDate = addDays(now, 25); // Join in 25 days
+    
     return [
       {
         id: "lineup-1",
@@ -104,12 +112,12 @@ class CrewRotationService {
         position_id: "pos-chief-officer",
         seafarer_id: "seafarer-1",
         requested_by: "fleet-manager-1",
-        request_date: "2024-06-19",
-        proposed_join_date: "2024-06-26",
+        request_date: format(now, 'yyyy-MM-dd'),
+        proposed_join_date: format(proposedJoinDate, 'yyyy-MM-dd'),
         status: "pending",
         priority: "high",
-        created_at: "2024-06-19T00:00:00Z",
-        updated_at: "2024-06-19T00:00:00Z"
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       }
     ];
   }
@@ -178,14 +186,18 @@ class CrewRotationService {
 
   // Analytics functions
   async getPerformanceEvaluations(): Promise<PerformanceEvaluation[]> {
+    const now = new Date();
+    const evaluationStart = subMonths(now, 5);
+    const evaluationEnd = subMonths(now, 1);
+    
     return [
       {
         id: "eval-1",
         seafarer_id: "seafarer-1",
         vessel_id: "vessel-1",
         contract_id: "contract-1",
-        evaluation_period_start: "2024-01-15",
-        evaluation_period_end: "2024-06-15",
+        evaluation_period_start: format(evaluationStart, 'yyyy-MM-dd'),
+        evaluation_period_end: format(evaluationEnd, 'yyyy-MM-dd'),
         overall_rating: 4.2,
         categories: [
           { category: "Technical Competence", score: 4.5 },
@@ -199,7 +211,7 @@ class CrewRotationService {
         ml_ranking_score: 2,
         evaluator_comments: "Excellent officer with strong technical skills.",
         crew_suggestions: "Recommended for Chief Officer promotion.",
-        created_at: "2024-06-19T00:00:00Z"
+        created_at: new Date().toISOString()
       }
     ];
   }

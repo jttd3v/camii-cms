@@ -6,29 +6,77 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Users, AlertTriangle, CheckCircle, Plus } from "lucide-react";
 import { useFleetRotaBoard } from "@/hooks/useCrewRotation";
 import CreateLineupModal from "./CreateLineupModal";
+import { getContractStatus } from "@/utils/maritimeDateUtils";
+import { addMonths, format, addDays } from "date-fns";
 
-// Mock data for demonstration - this will be replaced by real data from the service
-const mockVessels = [
-  {
-    id: "mv-pacific-star",
-    name: "MV Pacific Star",
-    berths: [
-      { position: "Master", current: "Capt. Rodriguez", endDate: "2024-07-15", status: "safe", position_id: "pos-master" },
-      { position: "Chief Officer", current: "C/O Martinez", endDate: "2024-06-25", status: "critical", position_id: "pos-chief-officer" },
-      { position: "Chief Engineer", current: "C/E Santos", endDate: "2024-08-10", status: "safe", position_id: "pos-chief-engineer" },
-      { position: "2nd Officer", current: "2/O Garcia", endDate: "2024-07-01", status: "warning", position_id: "pos-2nd-officer" }
-    ]
-  },
-  {
-    id: "mv-ocean-explorer", 
-    name: "MV Ocean Explorer",
-    berths: [
-      { position: "Master", current: "Capt. Johnson", endDate: "2024-08-20", status: "safe", position_id: "pos-master" },
-      { position: "Chief Officer", current: "C/O Thompson", endDate: "2024-06-30", status: "warning", position_id: "pos-chief-officer" },
-      { position: "Chief Engineer", current: "C/E Wilson", endDate: "2024-07-05", status: "critical", position_id: "pos-chief-engineer" }
-    ]
-  }
-];
+// Generate realistic contract end dates for current crew
+const generateRealisticBerths = () => {
+  const now = new Date();
+  
+  return [
+    {
+      id: "mv-pacific-star",
+      name: "MV Pacific Star",
+      berths: [
+        { 
+          position: "Master", 
+          current: "Capt. Rodriguez", 
+          endDate: format(addMonths(now, 2), "yyyy-MM-dd"), 
+          status: getContractStatus(addMonths(now, 2)),
+          position_id: "pos-master" 
+        },
+        { 
+          position: "Chief Officer", 
+          current: "C/O Martinez", 
+          endDate: format(addDays(now, 20), "yyyy-MM-dd"), 
+          status: getContractStatus(addDays(now, 20)),
+          position_id: "pos-chief-officer" 
+        },
+        { 
+          position: "Chief Engineer", 
+          current: "C/E Santos", 
+          endDate: format(addMonths(now, 4), "yyyy-MM-dd"), 
+          status: getContractStatus(addMonths(now, 4)),
+          position_id: "pos-chief-engineer" 
+        },
+        { 
+          position: "2nd Officer", 
+          current: "2/O Garcia", 
+          endDate: format(addDays(now, 45), "yyyy-MM-dd"), 
+          status: getContractStatus(addDays(now, 45)),
+          position_id: "pos-2nd-officer" 
+        }
+      ]
+    },
+    {
+      id: "mv-ocean-explorer",
+      name: "MV Ocean Explorer", 
+      berths: [
+        { 
+          position: "Master", 
+          current: "Capt. Johnson", 
+          endDate: format(addMonths(now, 5), "yyyy-MM-dd"), 
+          status: getContractStatus(addMonths(now, 5)),
+          position_id: "pos-master" 
+        },
+        { 
+          position: "Chief Officer", 
+          current: "C/O Thompson", 
+          endDate: format(addDays(now, 35), "yyyy-MM-dd"), 
+          status: getContractStatus(addDays(now, 35)),
+          position_id: "pos-chief-officer" 
+        },
+        { 
+          position: "Chief Engineer", 
+          current: "C/E Wilson", 
+          endDate: format(addDays(now, 15), "yyyy-MM-dd"), 
+          status: getContractStatus(addDays(now, 15)),
+          position_id: "pos-chief-engineer" 
+        }
+      ]
+    }
+  ];
+};
 
 const FleetRotaBoard = () => {
   const { vessels, loading } = useFleetRotaBoard();
@@ -36,6 +84,9 @@ const FleetRotaBoard = () => {
   const [showCreateLineup, setShowCreateLineup] = useState(false);
   const [selectedVessel, setSelectedVessel] = useState<string>("");
   const [selectedPositionId, setSelectedPositionId] = useState<string>("");
+
+  // Use realistic berths with current dates
+  const mockVessels = generateRealisticBerths();
 
   const getStatusColor = (status: string) => {
     switch (status) {

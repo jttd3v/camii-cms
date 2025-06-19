@@ -1,7 +1,8 @@
 
 import { vessels } from "./dummyVessels";
 import { filipinoNames } from "./dummyFilipinoNames";
-import { format, addMonths, differenceInDays, differenceInMonths, subYears, addDays, addYears, subDays } from "date-fns";
+import { format, differenceInDays, subYears } from "date-fns";
+import { generateRealisticContractPeriod, generateDocumentExpiry } from "@/utils/maritimeDateUtils";
 
 export type CrewMember = {
   id: string;
@@ -54,9 +55,8 @@ for (const vessel of vessels) {
     const birthDate = randomDate(new Date(1970, 0, 1), new Date(2004, 0, 1));
     const age = differenceInDays(new Date(), birthDate) / 365.25 | 0;
 
-    const boardedVesselDate = randomDate(new Date(2024, 0, 1), new Date());
-    const timeOnboardMonths = differenceInMonths(new Date(), boardedVesselDate);
-    const timeOnboardDays = differenceInDays(new Date(), addMonths(boardedVesselDate, timeOnboardMonths));
+    // Generate realistic contract period for current crew
+    const contractPeriod = generateRealisticContractPeriod(vessels.indexOf(vessel), i);
     
     const candidateIdx = Math.floor(Math.random() * filipinoNames.length);
 
@@ -73,15 +73,15 @@ for (const vessel of vessels) {
       age,
       address: "Cebu City, Philippines", // simplified
       passportNumber: `PH${Math.random().toString().slice(2, 10)}`,
-      passportExpiry: format(addYears(new Date(), Math.ceil(Math.random() * 5) + 1), "yyyy-MM-dd"),
+      passportExpiry: generateDocumentExpiry(6, 5), // 6 months to 5 years
       seamanBookNumber: `SB${Math.random().toString().slice(2, 10)}`,
-      seamanBookExpiry: format(addYears(new Date(), Math.ceil(Math.random() * 5) + 1), "yyyy-MM-dd"),
+      seamanBookExpiry: generateDocumentExpiry(12, 5), // 1 to 5 years
       joinedPort: getRandomItem(ports),
-      departedCebu: format(subDays(boardedVesselDate, 2), "yyyy-MM-dd HH:mm"),
-      boardedVessel: format(boardedVesselDate, "yyyy-MM-dd HH:mm"),
-      timeOnboard: `${timeOnboardMonths}m ${timeOnboardDays}d`,
-      contractDuration: "9 months",
-      estimatedReplacementDate: format(addMonths(boardedVesselDate, 9), "yyyy-MM-dd"),
+      departedCebu: format(new Date(contractPeriod.boardedDate.getTime() - 2 * 24 * 60 * 60 * 1000), "yyyy-MM-dd HH:mm"),
+      boardedVessel: format(contractPeriod.boardedDate, "yyyy-MM-dd HH:mm"),
+      timeOnboard: contractPeriod.timeOnboard,
+      contractDuration: "9 months", // Standard contract length
+      estimatedReplacementDate: format(contractPeriod.estimatedReplacementDate, "yyyy-MM-dd"),
       candidateToReplace: filipinoNames[candidateIdx],
     });
     crewIdx++;

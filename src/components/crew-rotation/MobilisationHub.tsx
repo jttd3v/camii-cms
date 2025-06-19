@@ -6,57 +6,65 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plane, Hotel, FileCheck, Clock } from "lucide-react";
+import { generateRealisticMobilisationDate } from "@/utils/maritimeDateUtils";
+import { format, addDays, subDays } from "date-fns";
 
-// Mock mobilisation data
-const mockMobilisations = [
-  {
-    id: "MOB-2024-001",
-    seafarer: "C/O Antonio Reyes",
-    vessel: "MV Pacific Star",
-    departure: "2024-06-25",
-    joinDate: "2024-06-26",
-    homePort: "Manila",
-    joinPort: "Singapore",
-    status: "In Progress",
-    travel: {
-      flight: "PR508 - Manila to Singapore (25-Jun 14:30)",
-      hotel: "Marina Bay Hotel (25-Jun night)",
-      visa: "Singapore Visa - Valid",
-      okToBoard: "Pending Medical"
+// Generate realistic mobilisation data
+const generateMockMobilisations = () => {
+  const mob1Dates = generateRealisticMobilisationDate();
+  const mob2Dates = generateRealisticMobilisationDate();
+  
+  return [
+    {
+      id: "MOB-2024-001",
+      seafarer: "C/O Antonio Reyes",
+      vessel: "MV Pacific Star",
+      departure: mob1Dates.departure,
+      joinDate: mob1Dates.joinDate,
+      homePort: "Manila",
+      joinPort: "Singapore",
+      status: "In Progress",
+      travel: {
+        flight: `PR508 - Manila to Singapore (${format(new Date(mob1Dates.departure), 'dd-MMM')} 14:30)`,
+        hotel: `Marina Bay Hotel (${format(subDays(new Date(mob1Dates.joinDate), 1), 'dd-MMM')} night)`,
+        visa: "Singapore Visa - Valid",
+        okToBoard: "Pending Medical"
+      },
+      restHours: {
+        lastWorkPeriod: format(subDays(new Date(), 10), 'yyyy-MM-dd HH:mm'),
+        minimumRest: "72 hours",
+        actualRest: "240 hours",
+        status: "Compliant"
+      }
     },
-    restHours: {
-      lastWorkPeriod: "2024-06-15 08:00",
-      minimumRest: "72 hours",
-      actualRest: "240 hours",
-      status: "Compliant"
+    {
+      id: "MOB-2024-002",
+      seafarer: "2/E Maria Santos", 
+      vessel: "MV Ocean Explorer",
+      departure: mob2Dates.departure,
+      joinDate: mob2Dates.joinDate,
+      homePort: "Cebu",
+      joinPort: "Dubai",
+      status: "Planning",
+      travel: {
+        flight: "To be booked",
+        hotel: "To be arranged",
+        visa: "UAE Visa - In Process",
+        okToBoard: "Documents Complete"
+      },
+      restHours: {
+        lastWorkPeriod: format(subDays(new Date(), 18), 'yyyy-MM-dd HH:mm'),
+        minimumRest: "72 hours", 
+        actualRest: "432 hours",
+        status: "Compliant"
+      }
     }
-  },
-  {
-    id: "MOB-2024-002",
-    seafarer: "2/E Maria Santos", 
-    vessel: "MV Ocean Explorer",
-    departure: "2024-06-28",
-    joinDate: "2024-06-30",
-    homePort: "Cebu",
-    joinPort: "Dubai",
-    status: "Planning",
-    travel: {
-      flight: "To be booked",
-      hotel: "To be arranged",
-      visa: "UAE Visa - In Process",
-      okToBoard: "Documents Complete"
-    },
-    restHours: {
-      lastWorkPeriod: "2024-06-10 16:00",
-      minimumRest: "72 hours", 
-      actualRest: "432 hours",
-      status: "Compliant"
-    }
-  }
-];
+  ];
+};
 
 const MobilisationHub = () => {
   const [selectedMob, setSelectedMob] = useState<string | null>(null);
+  const mockMobilisations = generateMockMobilisations();
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
