@@ -15,16 +15,27 @@ interface CreateLineupModalProps {
   positionId?: string;
 }
 
+interface FormData {
+  vessel_id: string;
+  position_id: string;
+  seafarer_id: string;
+  requested_by: string;
+  request_date: string;
+  proposed_join_date: string;
+  priority: "low" | "medium" | "high" | "critical";
+  comments: string;
+}
+
 const CreateLineupModal = ({ open, onOpenChange, seafarerId, positionId }: CreateLineupModalProps) => {
   const { createLineup } = useLineupApprovals();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     vessel_id: "",
     position_id: positionId || "",
     seafarer_id: seafarerId || "",
     requested_by: "current-user", // In real app, get from auth context
     request_date: new Date().toISOString().split('T')[0],
     proposed_join_date: "",
-    priority: "medium" as const,
+    priority: "medium",
     comments: ""
   });
 
