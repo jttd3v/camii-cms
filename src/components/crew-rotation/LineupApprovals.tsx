@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, Clock, CheckCircle, Send } from "lucide-react";
+import { FileText, Clock, CheckCircle, Send, Download } from "lucide-react";
+import { useLineupApprovals } from "@/hooks/useCrewRotation";
 
-// Mock lineup data
+// Mock lineup data - will be replaced by real data from the service
 const mockLineups = [
   {
     id: "LU-2024-001",
@@ -39,6 +40,7 @@ const mockLineups = [
 ];
 
 const LineupApprovals = () => {
+  const { lineupRequests, loading } = useLineupApprovals();
   const [selectedLineup, setSelectedLineup] = useState<string | null>(null);
   const [comments, setComments] = useState("");
 
@@ -58,6 +60,37 @@ const LineupApprovals = () => {
       default: return <Clock className="h-4 w-4" />;
     }
   };
+
+  const handleApproval = async (lineupId: string, approve: boolean) => {
+    try {
+      console.log(`${approve ? 'Approving' : 'Rejecting'} lineup ${lineupId} with comments: ${comments}`);
+      // In real implementation, this would call the approval service
+      setComments("");
+    } catch (error) {
+      console.error('Error processing approval:', error);
+    }
+  };
+
+  const generatePDF = (lineupId: string) => {
+    console.log(`Generating PDF for lineup ${lineupId}`);
+    // In real implementation, this would generate and download the lineup packet
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Lineup Approvals - Loading...</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-48 bg-gray-200 rounded"></div>
+            <div className="h-48 bg-gray-200 rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -127,11 +160,17 @@ const LineupApprovals = () => {
                     onChange={(e) => setComments(e.target.value)}
                   />
                   <div className="flex gap-2">
-                    <Button className="bg-green-600 hover:bg-green-700">
+                    <Button 
+                      className="bg-green-600 hover:bg-green-700"
+                      onClick={() => handleApproval(lineup.id, true)}
+                    >
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Approve Lineup
                     </Button>
-                    <Button variant="destructive">
+                    <Button 
+                      variant="destructive"
+                      onClick={() => handleApproval(lineup.id, false)}
+                    >
                       Reject Lineup
                     </Button>
                     <Button variant="outline">
@@ -147,7 +186,12 @@ const LineupApprovals = () => {
                   <FileText className="h-4 w-4 mr-2" />
                   View Complete Packet
                 </Button>
-                <Button size="sm" variant="outline">
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => generatePDF(lineup.id)}
+                >
+                  <Download className="h-4 w-4 mr-2" />
                   Download PDF
                 </Button>
               </div>

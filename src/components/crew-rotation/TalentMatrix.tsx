@@ -5,12 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, AlertTriangle, XCircle, Search } from "lucide-react";
+import { CheckCircle, AlertTriangle, XCircle, Search, Plus } from "lucide-react";
+import { useTalentMatrix } from "@/hooks/useCrewRotation";
+import CreateLineupModal from "./CreateLineupModal";
 
-// Mock candidate data
+// Mock candidate data - will be replaced by real data from the service
 const mockCandidates = [
   {
-    id: "001",
+    id: "seafarer-1",
     name: "C/O Antonio Reyes",
     rank: "Chief Officer",
     certificates: ["COC Class 1", "STCW Basic Safety", "ARPA"],
@@ -23,7 +25,7 @@ const mockCandidates = [
     gaps: []
   },
   {
-    id: "002", 
+    id: "seafarer-2", 
     name: "2/O Maria Santos",
     rank: "Second Officer",
     certificates: ["COC Class 2", "STCW Basic Safety", "ECDIS"],
@@ -36,7 +38,7 @@ const mockCandidates = [
     gaps: ["ARPA Course"]
   },
   {
-    id: "003",
+    id: "seafarer-3",
     name: "3/O Jose Garcia",
     rank: "Third Officer", 
     certificates: ["COC Class 3", "STCW Basic Safety"],
@@ -51,8 +53,11 @@ const mockCandidates = [
 ];
 
 const TalentMatrix = () => {
+  const { seafarers, loading, calculateMatch } = useTalentMatrix();
   const [searchTerm, setSearchTerm] = useState("");
   const [positionFilter, setPositionFilter] = useState("all");
+  const [showCreateLineup, setShowCreateLineup] = useState(false);
+  const [selectedSeafarerId, setSelectedSeafarerId] = useState<string>("");
 
   const getMatchColor = (score: number) => {
     if (score >= 90) return "bg-green-500";
@@ -75,6 +80,28 @@ const TalentMatrix = () => {
     const matchesPosition = positionFilter === "all" || candidate.rank.toLowerCase().includes(positionFilter.toLowerCase());
     return matchesSearch && matchesPosition;
   });
+
+  const handleAddToLineup = (seafarerId: string) => {
+    setSelectedSeafarerId(seafarerId);
+    setShowCreateLineup(true);
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Real-time Talent Matrix - Loading...</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-20 bg-gray-200 rounded"></div>
+            <div className="h-20 bg-gray-200 rounded"></div>
+            <div className="h-20 bg-gray-200 rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -163,11 +190,24 @@ const TalentMatrix = () => {
               <div className="flex gap-2 mt-3">
                 <Button size="sm">View Profile</Button>
                 <Button size="sm" variant="outline">Schedule Interview</Button>
-                <Button size="sm" variant="outline">Add to Lineup</Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => handleAddToLineup(candidate.id)}
+                >
+                  <Plus className="h-3 w-3 mr-1" />
+                  Add to Lineup
+                </Button>
               </div>
             </div>
           ))}
         </div>
+
+        <CreateLineupModal
+          open={showCreateLineup}
+          onOpenChange={setShowCreateLineup}
+          seafarerId={selectedSeafarerId}
+        />
       </CardContent>
     </Card>
   );

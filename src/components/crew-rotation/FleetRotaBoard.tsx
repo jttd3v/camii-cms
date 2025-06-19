@@ -3,33 +3,39 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Users, AlertTriangle, CheckCircle } from "lucide-react";
+import { Calendar, Users, AlertTriangle, CheckCircle, Plus } from "lucide-react";
+import { useFleetRotaBoard } from "@/hooks/useCrewRotation";
+import CreateLineupModal from "./CreateLineupModal";
 
-// Mock data for fleet rotation
+// Mock data for demonstration - this will be replaced by real data from the service
 const mockVessels = [
   {
     id: "mv-pacific-star",
     name: "MV Pacific Star",
     berths: [
-      { position: "Master", current: "Capt. Rodriguez", endDate: "2024-07-15", status: "safe" },
-      { position: "Chief Officer", current: "C/O Martinez", endDate: "2024-06-25", status: "critical" },
-      { position: "Chief Engineer", current: "C/E Santos", endDate: "2024-08-10", status: "safe" },
-      { position: "2nd Officer", current: "2/O Garcia", endDate: "2024-07-01", status: "warning" }
+      { position: "Master", current: "Capt. Rodriguez", endDate: "2024-07-15", status: "safe", position_id: "pos-master" },
+      { position: "Chief Officer", current: "C/O Martinez", endDate: "2024-06-25", status: "critical", position_id: "pos-chief-officer" },
+      { position: "Chief Engineer", current: "C/E Santos", endDate: "2024-08-10", status: "safe", position_id: "pos-chief-engineer" },
+      { position: "2nd Officer", current: "2/O Garcia", endDate: "2024-07-01", status: "warning", position_id: "pos-2nd-officer" }
     ]
   },
   {
     id: "mv-ocean-explorer", 
     name: "MV Ocean Explorer",
     berths: [
-      { position: "Master", current: "Capt. Johnson", endDate: "2024-08-20", status: "safe" },
-      { position: "Chief Officer", current: "C/O Thompson", endDate: "2024-06-30", status: "warning" },
-      { position: "Chief Engineer", current: "C/E Wilson", endDate: "2024-07-05", status: "critical" }
+      { position: "Master", current: "Capt. Johnson", endDate: "2024-08-20", status: "safe", position_id: "pos-master" },
+      { position: "Chief Officer", current: "C/O Thompson", endDate: "2024-06-30", status: "warning", position_id: "pos-chief-officer" },
+      { position: "Chief Engineer", current: "C/E Wilson", endDate: "2024-07-05", status: "critical", position_id: "pos-chief-engineer" }
     ]
   }
 ];
 
 const FleetRotaBoard = () => {
+  const { vessels, loading } = useFleetRotaBoard();
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
+  const [showCreateLineup, setShowCreateLineup] = useState(false);
+  const [selectedVessel, setSelectedVessel] = useState<string>("");
+  const [selectedPositionId, setSelectedPositionId] = useState<string>("");
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -48,6 +54,28 @@ const FleetRotaBoard = () => {
       default: return <Users className="h-4 w-4" />;
     }
   };
+
+  const handleCreateLineup = (vesselId: string, positionId: string) => {
+    setSelectedVessel(vesselId);
+    setSelectedPositionId(positionId);
+    setShowCreateLineup(true);
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Fleet Rotation Board - Loading...</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-32 bg-gray-200 rounded"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -87,6 +115,19 @@ const FleetRotaBoard = () => {
                     <div className="text-xs text-gray-500 mt-1">
                       Contract ends: {berth.endDate}
                     </div>
+                    {berth.status === 'critical' && (
+                      <Button 
+                        size="sm" 
+                        className="mt-2 w-full"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCreateLineup(vessel.id, berth.position_id);
+                        }}
+                      >
+                        <Plus className="h-3 w-3 mr-1" />
+                        Create Lineup
+                      </Button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -101,9 +142,30 @@ const FleetRotaBoard = () => {
               <Button size="sm">Find Replacement</Button>
               <Button size="sm" variant="outline">Extend Contract</Button>
               <Button size="sm" variant="outline">View Candidates</Button>
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => {
+                  const [vesselId, position] = selectedPosition.split('-');
+                  const vessel = mockVessels.find(v => v.id === vesselId);
+                  const berth = vessel?.berths.find(b => b.position === position.replace(vesselId + '-', ''));
+                  if (berth) {
+                    handleCreateLineup(vesselId, berth.position_id);
+                  }
+                }}
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Create Lineup
+              </Button>
             </div>
           </div>
         )}
+
+        <CreateLineupModal
+          open={showCreateLineup}
+          onOpenChange={setShowCreateLineup}
+          positionId={selectedPositionId}
+        />
       </CardContent>
     </Card>
   );
