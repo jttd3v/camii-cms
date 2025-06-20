@@ -1,13 +1,12 @@
-
 import ContractTable from "@/components/ContractTable";
 import CrewCard from "@/components/CrewCard";
 import VacationSeafarersTable from "@/components/VacationSeafarersTable";
 import OnboardSeafarersTable from "@/components/OnboardSeafarersTable";
 import AllVesselsTab from "@/components/AllVesselsTab";
 import SeafarerApplicationForm from "@/components/SeafarerApplicationForm";
+import ExportToolsDropdown from "@/components/ExportToolsDropdown";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { FileText, QrCode, ArrowDown, Download, Upload } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PIModule from "@/components/PIModule";
 import CrewChangeTab from "@/components/CrewChangeTab";
@@ -28,8 +27,7 @@ const Index = () => {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline"><FileText className="mr-2 h-4 w-4" /> Export PDF </Button>
-          <Button variant="outline"><QrCode className="mr-2 h-4 w-4" /> QR Export</Button>
+          <ExportToolsDropdown />
           <DatabaseMigrationButtons />
         </div>
       </header>
