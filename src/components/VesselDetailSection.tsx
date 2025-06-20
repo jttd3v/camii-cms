@@ -10,10 +10,11 @@ type Field = {
 interface VesselDetailSectionProps {
   title: string;
   fields: Field[];
+  onSave?: (fields: { [key: string]: string }) => void;
 }
 
-export default function VesselDetailSection({ title, fields }: VesselDetailSectionProps) {
+export default function VesselDetailSection({ title, fields, onSave }: VesselDetailSectionProps) {
   return (
-    <EditableSection title={title} fields={fields} />
+    <EditableSection title={title} fields={fields} onSave={onSave} />
   );
 }

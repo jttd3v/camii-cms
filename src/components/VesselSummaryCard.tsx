@@ -13,13 +13,14 @@ interface VesselSummaryCardProps {
   fields: Field[];
   onViewCrewClick: () => void;
   isCrewListVisible: boolean;
+  onSave?: (fields: { [key: string]: string }) => void;
 }
 
-export default function VesselSummaryCard({ fields, onViewCrewClick, isCrewListVisible }: VesselSummaryCardProps) {
+export default function VesselSummaryCard({ fields, onViewCrewClick, isCrewListVisible, onSave }: VesselSummaryCardProps) {
   return (
     <Card id="VesselCard" className="mb-6">
       <CardHeader>
-        <EditableSection title="" fields={fields} />
+        <EditableSection title="" fields={fields} onSave={onSave} />
       </CardHeader>
       <CardFooter>
         <Button onClick={onViewCrewClick} variant="secondary">
