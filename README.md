@@ -1,4 +1,8 @@
-# Welcome to your Lovable project
+# Seafarer Contract Lifecycle
+
+Demo application for managing maritime crew contracts, vessels and related
+operations. The project was generated with [Lovable](https://lovable.dev) and is
+written in TypeScript using React, Vite and shadcn-ui components.
 
 ## Project info
 
@@ -59,6 +63,56 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+
+## Core modules and features
+
+The application is organised into several modules:
+
+- **Dashboard** – overview of alerts, crew movements and KPI charts.
+- **Crew Rotation** – forecast & plan, candidate matching, approvals, mobilisation,
+  handover and analytics tools.
+- **Onboard/Vacation Seafarers** – searchable tables showing current and vacationing crew with compliance status.
+- **All Vessels** – list and grid views of vessels with detailed editable profiles.
+- **Crew Change** – manage upcoming, active and historical crew changes with print-outs and compliance checks.
+- **Seafarer Application Form** – interactive form for crew applicants.
+- **P&I Case Management** – track incidents and claims with authentication for edits.
+- **Data Migration & Export Tools** – download templates, upload databases, export PDFs or QR codes.
+
+## User manual
+
+1. **Running locally**
+   - Install dependencies with `npm i`.
+   - Start the development server using `npm run dev` and open the printed URL in your browser.
+
+2. **Navigation**
+   - The sidebar provides quick access to all modules. Collapse or expand it using the hamburger icon.
+   - The dashboard shows alerts, crew movements and KPI summaries.
+
+3. **Crew Rotation**
+   - Forecast and plan rotations, review candidate matches and approve lineups.
+   - Mobilisation and handover tabs help track joining and relief processes.
+   - Analytics summarises performance and rotation statistics.
+
+4. **Crew Lists**
+   - "Onboard" and "Vacation" sections display crew tables with search and filter tools.
+   - Click a crew member to view contract previews and compliance information.
+
+5. **Vessel Management**
+   - "All Vessels" lists each vessel. Select one to view or edit its particulars and see the current crew list.
+
+6. **Crew Change**
+   - Track upcoming, active and past crew changes. Use the "Add New Crew Change" button to schedule a change.
+   - Print itinerary details from the active list when needed.
+
+7. **Seafarer Applications**
+   - The application form captures personal info, experience and training records. Submit to generate an application ID.
+
+8. **P&I Module**
+   - Manage Protection & Indemnity cases. Editing a case requires authentication (use `admin` / `adminedit` for the demo).
+
+9. **Database Migration & Export**
+   - Use the export tools in the sidebar to download templates or generate PDF/QR reports.
+   - The upload option allows importing crew data from CSV/XLSX files (mocked in this demo).
 
 ## How can I deploy this project?
 
