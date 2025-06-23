@@ -10,7 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
+  SidebarInput,
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
@@ -20,7 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import {
   RotateCcw,
   Users,
@@ -42,24 +41,66 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import DatabaseUploadModal from "./DatabaseUploadModal";
 
-const navigationItems = [
-  { title: "Crew Rotation", url: "/crew-rotation", icon: RotateCcw },
-  { title: "Onboard Seafarers", url: "/onboard", icon: Users },
-  { title: "Vacation Seafarers", url: "/vacation", icon: Umbrella },
-  { title: "All Vessels", url: "/vessels", icon: Ship },
-  { title: "Crew Change", url: "/crew-change", icon: ArrowLeftRight },
-  { title: "Seafarer Application", url: "/application", icon: FileText },
-  { title: "P&I", url: "/pni", icon: Shield },
+// Navigation items organized by logical workflow
+const crewManagementItems = [
+  { 
+    title: "Crew Rotation", 
+    url: "/crew-rotation", 
+    icon: RotateCcw,
+    tooltip: "Manage crew rotation schedules and planning"
+  },
+  { 
+    title: "Crew Change", 
+    url: "/crew-change", 
+    icon: ArrowLeftRight,
+    tooltip: "Handle crew changes and transfers"
+  },
+  { 
+    title: "Onboard Seafarers", 
+    url: "/onboard", 
+    icon: Users,
+    tooltip: "View currently onboard crew members"
+  },
+  { 
+    title: "Vacation Seafarers", 
+    url: "/vacation", 
+    icon: Umbrella,
+    tooltip: "Manage seafarers on vacation or leave"
+  },
+];
+
+const fleetItems = [
+  { 
+    title: "All Vessels", 
+    url: "/vessels", 
+    icon: Ship,
+    tooltip: "View and manage fleet vessels"
+  },
+];
+
+const seafarerItems = [
+  { 
+    title: "Seafarer Application", 
+    url: "/application", 
+    icon: FileText,
+    tooltip: "Process new seafarer applications"
+  },
+  { 
+    title: "P&I", 
+    url: "/pni", 
+    icon: Shield,
+    tooltip: "Protection & Indemnity Insurance Records"
+  },
 ];
 
 const quickAccessItems = [
-  { icon: Search, label: "Search Crew" },
-  { icon: FileText, label: "Contract Management (SEA, CBA, Extensions etc.)" },
-  { icon: Calendar, label: "Monthly Crew Health Monitoring Report" },
-  { icon: BarChart3, label: "Crew Performance (Promotion, Loyalty)" },
-  { icon: RotateCcw, label: "Crew Change" },
-  { icon: BarChart3, label: "KPI Reports" },
-  { icon: BookOpen, label: "CAMII QMS Procedures" },
+  { icon: Search, label: "Search Crew", tooltip: "Quick crew member search" },
+  { icon: FileText, label: "Contract Management (SEA, CBA, Extensions etc.)", tooltip: "Manage contracts and extensions" },
+  { icon: Calendar, label: "Monthly Crew Health Monitoring Report", tooltip: "Health monitoring reports" },
+  { icon: BarChart3, label: "Crew Performance (Promotion, Loyalty)", tooltip: "Performance analytics" },
+  { icon: RotateCcw, label: "Crew Change", tooltip: "Quick crew change access" },
+  { icon: BarChart3, label: "KPI Reports", tooltip: "Key performance indicators" },
+  { icon: BookOpen, label: "CAMII QMS Procedures", tooltip: "Quality management procedures" },
 ];
 
 export function AppSidebar() {
@@ -67,6 +108,7 @@ export function AppSidebar() {
   const location = useLocation();
   const { toast } = useToast();
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   
   const currentPath = location.pathname;
   const isCollapsed = state === "collapsed";
@@ -106,26 +148,73 @@ export function AppSidebar() {
     });
   };
 
+  // Filter items based on search query
+  const filteredQuickAccess = quickAccessItems.filter(item =>
+    item.label.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCrewManagement = crewManagementItems.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredFleet = fleetItems.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredSeafarer = seafarerItems.filter(item =>
+    item.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <Sidebar collapsible="icon">
         <SidebarContent>
-          {/* Main Navigation */}
+          {/* Search/Filter */}
+          {!isCollapsed && (
+            <div className="p-2">
+              <SidebarInput
+                placeholder="Search menu..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-9"
+              />
+            </div>
+          )}
+
+          {/* Dashboard */}
           <SidebarGroup>
-            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={currentPath === "/"}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={currentPath === "/"}
+                    tooltip="Main dashboard overview"
+                    className="data-[active=true]:bg-blue-100 data-[active=true]:border-l-4 data-[active=true]:border-l-blue-600 data-[active=true]:font-semibold data-[active=true]:text-blue-900"
+                  >
                     <NavLink to="/">
                       <BarChart3 />
                       {!isCollapsed && <span>Dashboard</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                {navigationItems.map((item) => (
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* Crew Management Section */}
+          <SidebarGroup>
+            <SidebarGroupLabel>Crew Management</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredCrewManagement.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={isActive(item.url)}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={isActive(item.url)}
+                      tooltip={item.tooltip}
+                      className="data-[active=true]:bg-blue-100 data-[active=true]:border-l-4 data-[active=true]:border-l-blue-600 data-[active=true]:font-semibold data-[active=true]:text-blue-900"
+                    >
                       <NavLink to={item.url}>
                         <item.icon />
                         {!isCollapsed && <span>{item.title}</span>}
@@ -137,22 +226,71 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          {/* Quick Access */}
+          {/* Fleet Section */}
           <SidebarGroup>
-            <SidebarGroupLabel>Quick Access</SidebarGroupLabel>
+            <SidebarGroupLabel>Fleet</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
+                {filteredFleet.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={isActive(item.url)}
+                      tooltip={item.tooltip}
+                      className="data-[active=true]:bg-blue-100 data-[active=true]:border-l-4 data-[active=true]:border-l-blue-600 data-[active=true]:font-semibold data-[active=true]:text-blue-900"
+                    >
+                      <NavLink to={item.url}>
+                        <item.icon />
+                        {!isCollapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* Seafarers Section */}
+          <SidebarGroup>
+            <SidebarGroupLabel>Seafarers</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredSeafarer.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton 
+                      asChild 
+                      isActive={isActive(item.url)}
+                      tooltip={item.tooltip}
+                      className="data-[active=true]:bg-blue-100 data-[active=true]:border-l-4 data-[active=true]:border-l-blue-600 data-[active=true]:font-semibold data-[active=true]:text-blue-900"
+                    >
+                      <NavLink to={item.url}>
+                        <item.icon />
+                        {!isCollapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          {/* Utilities Section */}
+          <SidebarGroup>
+            <SidebarGroupLabel>Utilities</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {/* Quick Actions */}
                 <SidebarMenuItem>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <SidebarMenuButton>
+                      <SidebarMenuButton tooltip="Quick access to common actions">
                         <Menu />
                         {!isCollapsed && <span>Quick Actions</span>}
                         {!isCollapsed && <ChevronDown className="ml-auto h-4 w-4" />}
                       </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="start" className="w-80">
-                      {quickAccessItems.map((item, index) => (
+                      {filteredQuickAccess.map((item, index) => (
                         <DropdownMenuItem key={index} className="flex items-center gap-3 p-3">
                           <item.icon className="h-4 w-4" />
                           <span>{item.label}</span>
@@ -161,19 +299,12 @@ export function AppSidebar() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
 
-          {/* Tools & Export */}
-          <SidebarGroup>
-            <SidebarGroupLabel>Tools & Export</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
+                {/* Export Tools */}
                 <SidebarMenuItem>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <SidebarMenuButton>
+                      <SidebarMenuButton tooltip="Download reports and logs">
                         <Download />
                         {!isCollapsed && <span>Export Tools</span>}
                         {!isCollapsed && <ChevronDown className="ml-auto h-4 w-4" />}
@@ -196,8 +327,13 @@ export function AppSidebar() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </SidebarMenuItem>
+
+                {/* Upload Database */}
                 <SidebarMenuItem>
-                  <SidebarMenuButton onClick={() => setIsUploadModalOpen(true)}>
+                  <SidebarMenuButton 
+                    onClick={() => setIsUploadModalOpen(true)}
+                    tooltip="Upload database files and backups"
+                  >
                     <Upload />
                     {!isCollapsed && <span>Upload Database</span>}
                   </SidebarMenuButton>
