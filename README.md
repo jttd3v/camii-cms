@@ -86,31 +86,35 @@ The application is organised into several modules:
 
 2. **Navigation**
    - The sidebar provides quick access to all modules. Collapse or expand it using the hamburger icon.
-   - The dashboard shows alerts, crew movements and KPI summaries.
+ - The dashboard shows alerts, crew movements and KPI summaries.
 
-3. **Crew Rotation**
+3. **Customising the Dashboard**
+   - Drag and resize the widgets on the dashboard to create your preferred layout.
+   - Your layout is saved locally and restored on the next visit.
+
+4. **Crew Rotation**
    - Forecast and plan rotations, review candidate matches and approve lineups.
    - Mobilisation and handover tabs help track joining and relief processes.
    - Analytics summarises performance and rotation statistics.
 
-4. **Crew Lists**
+5. **Crew Lists**
    - "Onboard" and "Vacation" sections display crew tables with search and filter tools.
    - Click a crew member to view contract previews and compliance information.
 
-5. **Vessel Management**
+6. **Vessel Management**
    - "All Vessels" lists each vessel. Select one to view or edit its particulars and see the current crew list.
 
-6. **Crew Change**
+7. **Crew Change**
    - Track upcoming, active and past crew changes. Use the "Add New Crew Change" button to schedule a change.
    - Print itinerary details from the active list when needed.
 
-7. **Seafarer Applications**
+8. **Seafarer Applications**
    - The application form captures personal info, experience and training records. Submit to generate an application ID.
 
-8. **P&I Module**
+9. **P&I Module**
    - Manage Protection & Indemnity cases. Editing a case requires authentication (use `admin` / `adminedit` for the demo).
 
-9. **Database Migration & Export**
+10. **Database Migration & Export**
    - Use the export tools in the sidebar to download templates or generate PDF/QR reports.
    - The upload option allows importing crew data from CSV/XLSX files (mocked in this demo).
 
