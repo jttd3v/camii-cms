@@ -14,7 +14,246 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      vessels: {
+        Row: {
+          ais: string | null
+          autopilot: string | null
+          auxmaker: string | null
+          auxnum: string | null
+          beam: string | null
+          bnwas: string | null
+          boiler: string | null
+          builder: string | null
+          built: string | null
+          bwm: string | null
+          bwts: string | null
+          callsign: string | null
+          certupload: string | null
+          class: string | null
+          classcert: string | null
+          co2: string | null
+          console: string | null
+          crane: string | null
+          created_at: string
+          crewmatrix: string | null
+          delivery: string | null
+          doc: string | null
+          doccert: string | null
+          draft: string | null
+          dwt: string | null
+          ecdis: string | null
+          enginemodel: string | null
+          enginepower: string | null
+          familiar: string | null
+          flag: string | null
+          gmdss: string | null
+          gt: string | null
+          gyro: string | null
+          hatch: string | null
+          hullno: string | null
+          id: string
+          imo: string
+          incinerator: string | null
+          insurer: string | null
+          iopp: string | null
+          ism: string | null
+          issc: string | null
+          keeldate: string | null
+          lastchange: string | null
+          lastdock: string | null
+          loa: string | null
+          magcompass: string | null
+          mainengine: string | null
+          majorrepair: string | null
+          manuals: string | null
+          mgr: string | null
+          mlc: string | null
+          name: string
+          nextcrew: string | null
+          nextdock: string | null
+          nt: string | null
+          operator: string | null
+          owner: string | null
+          ownerinstruct: string | null
+          ows: string | null
+          pi: string | null
+          plans: string | null
+          pmslink: string | null
+          propeller: string | null
+          pump: string | null
+          radar: string | null
+          rotation: string | null
+          safeequip: string | null
+          safemanning: string | null
+          scrubber: string | null
+          sewage: string | null
+          shaftgen: string | null
+          smc: string | null
+          tsuper: string | null
+          type: string | null
+          updated_at: string
+          vdr: string | null
+        }
+        Insert: {
+          ais?: string | null
+          autopilot?: string | null
+          auxmaker?: string | null
+          auxnum?: string | null
+          beam?: string | null
+          bnwas?: string | null
+          boiler?: string | null
+          builder?: string | null
+          built?: string | null
+          bwm?: string | null
+          bwts?: string | null
+          callsign?: string | null
+          certupload?: string | null
+          class?: string | null
+          classcert?: string | null
+          co2?: string | null
+          console?: string | null
+          crane?: string | null
+          created_at?: string
+          crewmatrix?: string | null
+          delivery?: string | null
+          doc?: string | null
+          doccert?: string | null
+          draft?: string | null
+          dwt?: string | null
+          ecdis?: string | null
+          enginemodel?: string | null
+          enginepower?: string | null
+          familiar?: string | null
+          flag?: string | null
+          gmdss?: string | null
+          gt?: string | null
+          gyro?: string | null
+          hatch?: string | null
+          hullno?: string | null
+          id?: string
+          imo: string
+          incinerator?: string | null
+          insurer?: string | null
+          iopp?: string | null
+          ism?: string | null
+          issc?: string | null
+          keeldate?: string | null
+          lastchange?: string | null
+          lastdock?: string | null
+          loa?: string | null
+          magcompass?: string | null
+          mainengine?: string | null
+          majorrepair?: string | null
+          manuals?: string | null
+          mgr?: string | null
+          mlc?: string | null
+          name: string
+          nextcrew?: string | null
+          nextdock?: string | null
+          nt?: string | null
+          operator?: string | null
+          owner?: string | null
+          ownerinstruct?: string | null
+          ows?: string | null
+          pi?: string | null
+          plans?: string | null
+          pmslink?: string | null
+          propeller?: string | null
+          pump?: string | null
+          radar?: string | null
+          rotation?: string | null
+          safeequip?: string | null
+          safemanning?: string | null
+          scrubber?: string | null
+          sewage?: string | null
+          shaftgen?: string | null
+          smc?: string | null
+          tsuper?: string | null
+          type?: string | null
+          updated_at?: string
+          vdr?: string | null
+        }
+        Update: {
+          ais?: string | null
+          autopilot?: string | null
+          auxmaker?: string | null
+          auxnum?: string | null
+          beam?: string | null
+          bnwas?: string | null
+          boiler?: string | null
+          builder?: string | null
+          built?: string | null
+          bwm?: string | null
+          bwts?: string | null
+          callsign?: string | null
+          certupload?: string | null
+          class?: string | null
+          classcert?: string | null
+          co2?: string | null
+          console?: string | null
+          crane?: string | null
+          created_at?: string
+          crewmatrix?: string | null
+          delivery?: string | null
+          doc?: string | null
+          doccert?: string | null
+          draft?: string | null
+          dwt?: string | null
+          ecdis?: string | null
+          enginemodel?: string | null
+          enginepower?: string | null
+          familiar?: string | null
+          flag?: string | null
+          gmdss?: string | null
+          gt?: string | null
+          gyro?: string | null
+          hatch?: string | null
+          hullno?: string | null
+          id?: string
+          imo?: string
+          incinerator?: string | null
+          insurer?: string | null
+          iopp?: string | null
+          ism?: string | null
+          issc?: string | null
+          keeldate?: string | null
+          lastchange?: string | null
+          lastdock?: string | null
+          loa?: string | null
+          magcompass?: string | null
+          mainengine?: string | null
+          majorrepair?: string | null
+          manuals?: string | null
+          mgr?: string | null
+          mlc?: string | null
+          name?: string
+          nextcrew?: string | null
+          nextdock?: string | null
+          nt?: string | null
+          operator?: string | null
+          owner?: string | null
+          ownerinstruct?: string | null
+          ows?: string | null
+          pi?: string | null
+          plans?: string | null
+          pmslink?: string | null
+          propeller?: string | null
+          pump?: string | null
+          radar?: string | null
+          rotation?: string | null
+          safeequip?: string | null
+          safemanning?: string | null
+          scrubber?: string | null
+          sewage?: string | null
+          shaftgen?: string | null
+          smc?: string | null
+          tsuper?: string | null
+          type?: string | null
+          updated_at?: string
+          vdr?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
