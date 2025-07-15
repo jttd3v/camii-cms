@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { vessels } from "@/data/dummyVessels";
 import allCrews from "@/data/dummyCrews";
@@ -8,6 +8,7 @@ import VesselSummaryCard from "@/components/VesselSummaryCard";
 import VesselDetailSection from "@/components/VesselDetailSection";
 import CrewListTable from "@/components/CrewListTable";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 // Dummy fallback text for unset fields
 const dummy = (label: string) => <span className="italic text-muted-foreground">[Not Set]</span>;
@@ -19,7 +20,7 @@ export default function VesselDetail() {
   const { toast } = useToast();
 
   // State to hold current vessel data with all fields
-  const [vesselData, setVesselData] = useState(() => {
+  const [vesselData, setVesselData] = useState<any>(() => {
     if (!initialVessel) return null;
     
     return {
@@ -110,9 +111,54 @@ export default function VesselDetail() {
   // Helper to safely cast any value to string or empty string if falsy/undefined/null
   const s = (v: unknown) => (v !== null && v !== undefined ? String(v) : "");
 
-  // Generic save handler that updates vessel data and shows success message
-  const createSaveHandler = (sectionName: string) => (fields: { [key: string]: string }) => {
-    setVesselData(prev => prev ? { ...prev, ...fields } : null);
+  // Load vessel data from Supabase
+  useEffect(() => {
+    const loadVesselFromSupabase = async () => {
+      if (!imo) return;
+      
+      const { data, error } = await supabase
+        .from('vessels')
+        .select('*')
+        .eq('imo', imo)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error loading vessel:', error);
+        return;
+      }
+      
+      if (data) {
+        setVesselData(data);
+      }
+    };
+    
+    loadVesselFromSupabase();
+  }, [imo]);
+
+  // Generic save handler that updates vessel data and saves to Supabase
+  const createSaveHandler = (sectionName: string) => async (fields: { [key: string]: string }) => {
+    if (!vesselData) return;
+    
+    // Update local state first
+    const updatedData = { ...vesselData, ...fields };
+    setVesselData(updatedData);
+    
+    // Save to Supabase
+    const { error } = await supabase
+      .from('vessels')
+      .update(fields)
+      .eq('imo', vesselData.imo);
+    
+    if (error) {
+      console.error('Error saving vessel data:', error);
+      toast({
+        title: "Save Failed",
+        description: `Failed to save ${sectionName}. Please try again.`,
+        variant: "destructive"
+      });
+      return;
+    }
+    
     toast({
       title: "Changes Saved",
       description: `${sectionName} has been updated successfully.`,
