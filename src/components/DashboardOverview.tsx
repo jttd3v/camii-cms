@@ -41,7 +41,13 @@ const DashboardOverview = () => {
   return (
     <ResponsiveGridLayout
       className="layout"
-      layouts={{ lg: layout }}
+      layouts={{ 
+        lg: layout,
+        md: layout.map(item => ({ ...item, w: Math.min(item.w, 8) })),
+        sm: layout.map(item => ({ ...item, w: Math.min(item.w, 6) })),
+        xs: layout.map(item => ({ ...item, w: Math.min(item.w, 4) })),
+        xxs: layout.map(item => ({ ...item, w: Math.min(item.w, 2) }))
+      }}
       cols={{ lg: 12, md: 8, sm: 6, xs: 4, xxs: 2 }}
       rowHeight={30}
       onLayoutChange={(_l, all) => setLayout(all.lg)}
