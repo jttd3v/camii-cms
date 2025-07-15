@@ -42,7 +42,7 @@ const DashboardOverview = () => {
     <ResponsiveGridLayout
       className="layout"
       layouts={{ lg: layout }}
-      cols={{ lg: 12 }}
+      cols={{ lg: 12, md: 8, sm: 6, xs: 4, xxs: 2 }}
       rowHeight={30}
       onLayoutChange={(_l, all) => setLayout(all.lg)}
       draggableHandle=".draggable-handle"
