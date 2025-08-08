@@ -14,6 +14,184 @@ export type Database = {
   }
   public: {
     Tables: {
+      branding_settings: {
+        Row: {
+          company_name: string | null
+          created_at: string
+          id: string
+          logo_url: string | null
+          margin_bottom: number
+          margin_left: number
+          margin_right: number
+          margin_top: number
+          paper_size: string
+          updated_at: string
+          watermark: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          margin_bottom?: number
+          margin_left?: number
+          margin_right?: number
+          margin_top?: number
+          paper_size?: string
+          updated_at?: string
+          watermark?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string
+          id?: string
+          logo_url?: string | null
+          margin_bottom?: number
+          margin_left?: number
+          margin_right?: number
+          margin_top?: number
+          paper_size?: string
+          updated_at?: string
+          watermark?: string | null
+        }
+        Relationships: []
+      }
+      crews: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          email: string | null
+          employee_id: string
+          first_name: string
+          id: string
+          last_name: string
+          nationality: string | null
+          phone: string | null
+          photo_url: string | null
+          rank: string | null
+          updated_at: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          email?: string | null
+          employee_id: string
+          first_name: string
+          id?: string
+          last_name: string
+          nationality?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          rank?: string | null
+          updated_at?: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          email?: string | null
+          employee_id?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          nationality?: string | null
+          phone?: string | null
+          photo_url?: string | null
+          rank?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      performance_evaluations: {
+        Row: {
+          comments: string | null
+          created_at: string
+          crew_id: string
+          evaluation_date: string | null
+          evaluator: string | null
+          id: string
+          score: number | null
+          updated_at: string
+        }
+        Insert: {
+          comments?: string | null
+          created_at?: string
+          crew_id: string
+          evaluation_date?: string | null
+          evaluator?: string | null
+          id?: string
+          score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          comments?: string | null
+          created_at?: string
+          crew_id?: string
+          evaluation_date?: string | null
+          evaluator?: string | null
+          id?: string
+          score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_evaluations_crew_id_fkey"
+            columns: ["crew_id"]
+            isOneToOne: false
+            referencedRelation: "crews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sea_services: {
+        Row: {
+          created_at: string
+          crew_id: string
+          id: string
+          imo: string | null
+          rank: string | null
+          reason_sign_off: string | null
+          remarks: string | null
+          sign_off: string | null
+          sign_on: string | null
+          updated_at: string
+          vessel_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          crew_id: string
+          id?: string
+          imo?: string | null
+          rank?: string | null
+          reason_sign_off?: string | null
+          remarks?: string | null
+          sign_off?: string | null
+          sign_on?: string | null
+          updated_at?: string
+          vessel_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          crew_id?: string
+          id?: string
+          imo?: string | null
+          rank?: string | null
+          reason_sign_off?: string | null
+          remarks?: string | null
+          sign_off?: string | null
+          sign_on?: string | null
+          updated_at?: string
+          vessel_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sea_services_crew_id_fkey"
+            columns: ["crew_id"]
+            isOneToOne: false
+            referencedRelation: "crews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vessels: {
         Row: {
           ais: string | null
